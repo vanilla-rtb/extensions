@@ -33,10 +33,10 @@ struct {{.Matchername|Title}} {
     {{$entity.FieldType}} {{$entity.FieldName}}
     {{end}}
 
-    {{.Matchername|Title}}( {{range $i,$entity := $entities}} {{$entity.FieldType}} &&{{$entity.FieldName}}{{if $i}},{{end}}{{end}}) : {{range $i,$entity := $entities}}{{$entity.FieldName}}{ {{$entity.FieldName}} }{{if $i}},{{end}}{{end}}
+    {{.Matchername|Title}}( {{range $i,$entity := $entities}} {{$entity.FieldType}} &&{{$entity.FieldName}}{{if $i}},{{end}}{{end}}) : {{range $i,$entity := $entities}}{{$entity.FieldName}}{ {{$entity.FieldName}} }{{if NotLast $i $entities}}, {{end}}{{end}}
     {}
 
-    {{.Matchername|Title}}(): {{range $i,$entity := $entities}}{{$entity.FieldName}}{}{{if $i}},{{end}}{{end}}
+    {{.Matchername|Title}}(): {{range $i,$entity := $entities}}{{$entity.FieldName}}{}{{if NotLast $i $entities}},{{end}}{{end}}
     {}
 
     friend std::ostream &operator<<(std::ostream & os, const std::shared_ptr<{{.Matchername|Title}}> &dom) {
