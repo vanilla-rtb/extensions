@@ -7,16 +7,16 @@
 package main
 
 import (
-	"log"
+    "log"
 	"os"
-	"strings"
-	"path/filepath"
-	"text/template"
-	"time"
+    "strings"
+    "path/filepath"
+    "text/template"
+    "time"
     "reflect"
     "fmt"
     "io/ioutil"
-	"github.com/jessevdk/go-flags"
+    "github.com/jessevdk/go-flags"
 )
 
 //TODO: use reflection to create a list of fields in the template, How do we pass this struct to generator ???
