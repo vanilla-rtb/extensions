@@ -1,9 +1,9 @@
 /*
     err := CodeGenerator{
-        entity:             Domain{"", 0},
-        templ:              matcherTemplate,
-        generatedBasicName: generatedMatcherName,
-        fileHandler:        f,
+        Entity:             Domain{"", 0},
+        Template:           matcherTemplate,
+        GeneratedBasicName: generatedMatcherName,
+        File:        f,
     }.generate()
 
     die(err)
@@ -13,7 +13,6 @@ package codegen
 
 import (
 	"fmt"
-	"log"
 	"reflect"
 	"sort"
 	"strings"
@@ -51,13 +50,7 @@ func bool2int8 ( b bool ) int8 {
 	return bits
 }
 
-func die(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-var funcMap = template.FuncMap{
+var FuncMap = template.FuncMap{
 	"ToUpper": strings.ToUpper,
 	"ToLower": strings.ToLower,
 	"Title":   strings.Title,
@@ -86,15 +79,22 @@ var funcMap = template.FuncMap{
 }
 
 type CodeGenerator struct {
-	entity             interface{}
-	templ              *template.Template
-	generatedBasicName string
-	fileHandler *os.File
+	Entity             interface{}
+	Template           *template.Template
+	GeneratedBasicName string
 }
 
-func (g *CodeGenerator) generate() error {
+func NewCodeGenerator(entity interface{}, tmpl *template.Template) *CodeGenerator {
+	impl := new(CodeGenerator)
+	impl.Entity = entity
+	impl.Template = tmpl
+	impl.GeneratedBasicName = strings.ToLower(reflect.ValueOf(entity).Type().Name())
+	return impl
+}
 
-	v := reflect.ValueOf(g.entity)
+func (g *CodeGenerator) Execute(f *os.File) error {
+
+	v := reflect.ValueOf(g.Entity)
 
 	cachedValues := make([]CacheEntity, v.NumField())
 
@@ -108,13 +108,13 @@ func (g *CodeGenerator) generate() error {
 		fmt.Println(cachedValues[i].FieldName, "=>", cachedValues[i].FieldType, "=>", cachedValues[i].FieldTypeIPC, "=>", cachedValues[i].IsKey)
 	}
 
-	err := g.templ.Execute(g.fileHandler, struct {
+	err := g.Template.Execute(f, struct {
 		Timestamp    time.Time
 		Matchername  string
 		CachedValues []CacheEntity
 	}{
 		Timestamp:    time.Now(),
-		Matchername:  g.generatedBasicName,
+		Matchername:  g.GeneratedBasicName,
 		CachedValues: cachedValues,
 	})
 	return err
