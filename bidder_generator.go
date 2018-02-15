@@ -4,7 +4,7 @@
 
 // This program generates matchers It can be invoked by running
 // go generate
-package main
+package main 
 
 import (
     "fmt"
