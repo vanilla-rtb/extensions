@@ -46,7 +46,8 @@ func main() {
     var matcherTemplate = template.Must(template.New("").Funcs(codegen.FuncMap).Parse(string(templateContent)))
     for _,value  := range stubs.TypeRegistry {
         gen := codegen.NewCodeGenerator(reflect.New(value).Elem().Interface(), matcherTemplate, )
-        outFileName := strings.Join([]string{string(options.OutputDir), strings.Join([]string{gen.GeneratedBasicName, ".hpp"}, "")}, "/")
+
+        outFileName := strings.Join([]string{string(options.OutputDir), strings.Join([]string{strings.ToLower(gen.GeneratedBasicName), ".hpp"}, "")}, "/")
 
         f, err := os.Create(outFileName)
         die(err)
