@@ -8,6 +8,7 @@ go get -d github.com/vanilla-rtb/extensions
 mv $GOPATH/src/github.com/vanilla-rtb/extensions/stubs $GOPATH/src/stubs
 go install github.com/vanilla-rtb/extensions
 go install stubs
+cd $GOPATH/src/github.com/vanilla-rtb/extensions
 go run  bidder_generator.go --output-dir . --input-template golang/matcher.tmpl
 ```
 
