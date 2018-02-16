@@ -1,6 +1,8 @@
 # extensions
 Code Generators and Extensions for vanilla-rtb stack 
 
+[![Join the chat at https://gitter.im/vanilla-rtb/Lobby](https://badges.gitter.im/vanilla-rtb/Lobby.svg)](https://gitter.im/vanilla-rtb/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) 
+
 I. To install vanilla-rtb-extensions golang libraries run  ```install.sh``` or execute below commands
 
 ```bash
