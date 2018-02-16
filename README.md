@@ -18,7 +18,7 @@ without actually installing in the ```$GOPATH\pkg``` folder .
 To execute  generator execute following commands 
 ```
 cd $GOPATH/src/github.com/vanilla-rtb/extensions
-go run  bidder_generator.go --output-dir . --input-template golang/matcher.tmpl
+go run  bidder_generator.go --output-dir . --input-template templates/matcher.tmpl
 ```
 
 Our generator is referencing ```import "stubs"``` without full path to github repo , it's treated as your local package
