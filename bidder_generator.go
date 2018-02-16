@@ -4,7 +4,7 @@
 
 // This program generates matchers It can be invoked by running
 // go generate
-package main 
+package main
 
 import (
     "io/ioutil"
@@ -15,6 +15,8 @@ import (
     "github.com/jessevdk/go-flags"
     "github.com/vanilla-rtb/extensions/codegen"
     "log"
+    "reflect"
+    "stubs"
 )
 
 
@@ -34,21 +36,24 @@ var options Options
 var parser = flags.NewParser(&options, flags.Default)
 
 func main() {
+
     _, err := parser.Parse()
     die(err)
 
     templateContent, err := ioutil.ReadFile(string(options.InputTemplate))
     die(err)
-    
+
     var matcherTemplate = template.Must(template.New("").Funcs(codegen.FuncMap).Parse(string(templateContent)))
-    gen := codegen.NewCodeGenerator(codegen.Domain{}, matcherTemplate,)
-    outFileName := strings.Join([]string{string(options.OutputDir) , strings.Join([]string{gen.GeneratedBasicName,".hpp"},"")} , "/")
+    for _,value  := range stubs.TypeRegistry {
+        gen := codegen.NewCodeGenerator(reflect.New(value).Elem().Interface(), matcherTemplate, )
+        outFileName := strings.Join([]string{string(options.OutputDir), strings.Join([]string{gen.GeneratedBasicName, ".hpp"}, "")}, "/")
 
-    f, err := os.Create(outFileName)
-    die(err)
-    defer f.Close()
+        f, err := os.Create(outFileName)
+        die(err)
+        defer f.Close()
 
-    //Generate code
-    err = gen.Execute(f)
-    die(err)
+        //Generate code for each stub
+        err = gen.Execute(f)
+        die(err)
+    }
 }
