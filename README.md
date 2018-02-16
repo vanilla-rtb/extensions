@@ -1,7 +1,7 @@
 # extensions
 Code Generators and Extensions for vanilla-rtb stack 
 
-to execute matcher cache genertor run following commands or execute ```install.sh```
+I. To install vanilla-rtb-extensions golang libraries run  ```install.sh``` or execute below commands
 
 ```bash
 go get github.com/jessevdk/go-flags
@@ -14,8 +14,12 @@ go install stubs
 Make sure you pass ```-d``` flag to  ```go get``` command when installing vanilla-rtb/extensions it will clone our project
 without actually installing in the ```$GOPATH\pkg``` folder .
 
+II. download vanilla-rtb extensions to working folder 
+```
+git clone --recursive clone https://github.com/vanilla-rtb/extensions 
+```
 
-To execute  generator execute following commands 
+III. To execute  generator execute following commands 
 ```
 cd $GOPATH/src/github.com/vanilla-rtb/extensions
 go run  bidder_generator.go --output-dir . --input-template templates/matcher.tmpl
