@@ -88,7 +88,7 @@ func NewCodeGenerator(entity interface{}, tmpl *template.Template) *CodeGenerato
 	impl := new(CodeGenerator)
 	impl.Entity = entity
 	impl.Template = tmpl
-	impl.GeneratedBasicName = strings.ToLower(reflect.ValueOf(entity).Type().Name())
+	impl.GeneratedBasicName = reflect.ValueOf(entity).Type().Name()
 	return impl
 }
 

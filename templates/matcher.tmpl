@@ -61,7 +61,7 @@ struct {{.Matchername|Title}} {
             return is;
         }
         {{range $i,$entity := $entities -}}
-        value.{{$entity.FieldName}} = boost::lexical_cast<decltype(value.{{$entity.FieldName}})>(fields.at({{$i}}));
+        value.{{$entity.FieldName}} = boost::lexical_cast<decltype(value.{{$entity.FieldName}})>(fields.at({{$i}}).begin(),fields.at({{$i}}).size());
         {{end -}}
         return is;
     }
@@ -77,7 +77,7 @@ namespace ipc { namespace data {
         //for tagging in multi_index_container
         struct tag {}; // search on key
 
-        {{.Matchername}}_entity( const Alloc & a ) : alloc{a},
+        {{.Matchername|ToLower}}_entity( const Alloc & a ) : alloc{a},
         {{- range $i,$entity := $entities -}}
         {{$entity.FieldName}}
         {{- if (and (IsKey $entity) (IsIPC $entity)) -}}
@@ -129,14 +129,14 @@ namespace ipc { namespace data {
     };
 
     template<typename Alloc>
-    using {{.Matchername}}_container =
+    using {{.Matchername|ToLower}}_container =
     boost::multi_index_container<
-        {{.Matchername}}_entity<Alloc>,
+        {{.Matchername|ToLower}}_entity<Alloc>,
         boost::multi_index::indexed_by<
             boost::multi_index::ordered_unique<
-                  boost::multi_index::tag<typename {{.Matchername}}_entity<Alloc>::tag>,
+                  boost::multi_index::tag<typename {{.Matchername|ToLower}}_entity<Alloc>::tag>,
                   boost::multi_index::composite_key<
-                      {{.Matchername}}_entity<Alloc>,
+                      {{.Matchername|ToLower}}_entity<Alloc>,
                       {{range $entity := $entities -}}
                       {{if IsIPC $entity -}}
                       BOOST_MULTI_INDEX_MEMBER({{$matcher_name|ToLower}}_entity<Alloc>,typename {{$matcher_name|ToLower}}_entity<Alloc>::{{$entity.FieldTypeIPC}},{{$entity.FieldName}}),
@@ -165,11 +165,12 @@ template <typename Config,
           typename Alloc = typename datacache::entity_cache<Memory, ipc::data::{{.Matchername|ToLower}}_container>::char_allocator >
 class {{.Matchername|Title}}Entity {
         using Cache = datacache::entity_cache<Memory, ipc::data::{{.Matchername|ToLower}}_container> ;
-        using NameTag = typename ipc::data::{{.Matchername|ToLower}}_entity<Alloc>::tag;
+        using Tag = typename ipc::data::{{.Matchername|ToLower}}_entity<Alloc>::tag;
         using Keys = vanilla::tagged_tuple<NameTag, std::string>;
+        using {{.Matchername|Title}}Collection = std::vector<{{.Matchername|Title}}>;
     public:
         {{.Matchername|Title}}Entity(const Config &config):
-            config{config}, cache(config.data().{{.Matchername}}_ipc_name)
+            config{config}, cache(config.data().{{.Matchername|ToLower}}_ipc_name)
         {}
         void load() noexcept(false) {
             std::ifstream in{config.data().{{.Matchername|ToLower}}_source};
@@ -195,8 +196,22 @@ class {{.Matchername|Title}}Entity {
         }
 
         template<typename ...Args>
-        bool retrieve({{.Matchername|Title}} &value, Args args...) {
-            return cache.template retrieve<NameTag>(value, args)...;
+        bool retrieve({{.Matchername|Title}} &value, Args &&args...) {
+            return cache.template retrieve<Tag>(value, std::forward<Args>(args)...);
+        }
+
+        template<typename ...Args>
+        bool retrieve({{.Matchername|Title}}Collection &collection, Args &&args...) {
+            auto p = cache.template retrieve_raw<Tag>(std::forward<Args>(args)...);
+            auto is_found = p.first != p.second;
+            collection.reserve(500); //TODO: add this number as an option in stub's object Tag
+            while ( p.first != p.second ) {
+                {{.Matchername|Title}} data;
+                p.first->retrieve(data);
+                collection.emplace_back(std::move(data));
+                ++p.first;
+            }
+        return is_found;
         }
 
     private:
