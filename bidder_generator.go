@@ -12,20 +12,19 @@ import (
     "strings"
     "text/template"
 
-    "github.com/jessevdk/go-flags"
-    "github.com/vanilla-rtb/extensions/codegen"
     "log"
     "reflect"
-    "stubs"
-)
 
+    "github.com/jessevdk/go-flags"
+    "github.com/vanilla-rtb/extensions/codegen"
+    "github.com/vanilla-rtb/extensions/stubs"
+)
 
 func die(err error) {
     if err != nil {
         log.Fatal(err)
     }
 }
-
 
 type Options struct {
     InputTemplate flags.Filename `short:"i" long:"input-template" description:"InputTemplate file" default:"-"`
@@ -44,8 +43,8 @@ func main() {
     die(err)
 
     var matcherTemplate = template.Must(template.New("").Funcs(codegen.FuncMap).Parse(string(templateContent)))
-    for _,value  := range stubs.TypeRegistry {
-        gen := codegen.NewCodeGenerator(reflect.New(value).Elem().Interface(), matcherTemplate, )
+    for _, value := range stubs.TypeRegistry {
+        gen := codegen.NewCodeGenerator(reflect.New(value).Elem().Interface(), matcherTemplate)
 
         outFileName := strings.Join([]string{string(options.OutputDir), strings.Join([]string{strings.ToLower(gen.GeneratedBasicName), ".hpp"}, "")}, "/")
 
