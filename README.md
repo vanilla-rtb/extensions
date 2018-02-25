@@ -60,7 +60,7 @@ type ICOCampaign struct {
 }
 ```
 
-Currently we only generate C++ code for vanilla-rtb library but expect our generator produce and API to bridge golang 
+Currently we only generate C++ code for vanilla-rtb library but expect our generator produce an API to bridge golang 
 types like Domain with C++ IPC layer and later do the same for Java and PHP.
 
 [![Join the chat at https://gitter.im/vanilla-rtb/Lobby](https://badges.gitter.im/vanilla-rtb/Lobby.svg)](https://gitter.im/vanilla-rtb/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) 
