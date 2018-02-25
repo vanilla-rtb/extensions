@@ -29,8 +29,8 @@ cd extensions
 go run  bidder_generator.go --output-dir . --input-template templates/matcher.tmpl
 ```
 
-**Our generator is referencing ```import "stubs"``` without full path to github repo , it's treated as your local package
-where you will store all of your future stubs.***
+**Our generator is referencing** ``` import "stubs" ``` **without full path to github repo , it's treated as your local package
+where you will store all of your future stubs.**
 
 The code you place in the stubs package needs to register your stub classes it's done with
 ```TypeRegistry``` exported package variable.
