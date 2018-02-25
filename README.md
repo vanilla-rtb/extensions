@@ -39,6 +39,7 @@ Just add more  Objects to the registry  and ```codegen``` will automatically reg
 ```
 var TypeRegistry = map[string]reflect.Type {
 	reflect.TypeOf(Domain{}).Name() : reflect.ValueOf(Domain{}).Type(),
+	reflect.TypeOf(ICOCampaign{}).Name(): reflect.ValueOf(ICOCampaign{}).Type(),
 }
 ```
 
@@ -51,6 +52,11 @@ The Domain struct tags implicetely tell generator that the lookup is done by sin
 type Domain struct {
     name      string `cpp:"std::string"  ipc:"char_string" is_key:"yes"`
     domain_id uint32 `cpp:"uint32_t" ipc:"uint32_t"`
+}
+
+type ICOCampaign struct {
+    domain_id   uint32 `cpp:"uint32_t" ipc:"uint32_t" is_key:"yes"`
+    campaign_id uint32 `cpp:"uint32_t" ipc:"uint32_t"`
 }
 ```
 
