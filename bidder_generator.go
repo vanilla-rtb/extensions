@@ -17,7 +17,7 @@ import (
 
     "github.com/jessevdk/go-flags"
     "github.com/vanilla-rtb/extensions/codegen"
-    "github.com/vanilla-rtb/extensions/stubs"
+    "stubs"
 )
 
 func die(err error) {
