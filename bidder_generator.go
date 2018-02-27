@@ -45,7 +45,7 @@ var generatorTypes = map[string]GenerateFunc{
 		return codegen.NewCmakeGenerator("bidder", t).Execute(f)
 	},
 	"app": func(o *Options, t *template.Template) error {
-		outFileName := strings.Join([]string{string(options.OutputDir), "bidder", ".cpp"}, "/")
+		outFileName := strings.Join([]string{string(options.OutputDir), strings.Join([]string{string(options.Executable), ".cpp"},"")}, "/")
 		f, err := os.Create(outFileName)
 		if err != nil {
 			return err
