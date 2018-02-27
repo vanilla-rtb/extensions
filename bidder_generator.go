@@ -13,7 +13,6 @@ import (
     "text/template"
 
     "log"
-    //"reflect"
 
     "github.com/jessevdk/go-flags"
     "github.com/vanilla-rtb/extensions/codegen"
@@ -29,7 +28,8 @@ func die(err error) {
 type Options struct {
     InputTemplate flags.Filename `short:"i" long:"input-template" description:"InputTemplate file" default:"-"`
     OutputDir     flags.Filename `short:"o" long:"output-dir" description:"OutputDir file" default:"-"`
-    GeneratorType func(string) `short:"g" long:"generator-type" description:"GeneratorType" default:"cache"`
+    GeneratorType func(string)   `short:"g" long:"generator-type" description:"GeneratorType" default:"matchers"`
+    Executable    flags.Filename `short:"e" long:"executable" description:"Executable name" default:"bidder"`
 }
 
 var options Options
@@ -38,7 +38,7 @@ var parser = flags.NewParser(&options, flags.Default)
 var generatorTypes = map[string]reflect.Type {
     "cmake"  : reflect.TypeOf(codegen.CmakeGenerator{}),
     "app"    : reflect.TypeOf(codegen.AppGenerator{}),
-    "cache"  : reflect.TypeOf(codegen.CacheGenerator{}),
+    "matchers"  : reflect.TypeOf(codegen.CacheGenerator{}),
 }
 
 var generatorType reflect.Type
@@ -59,7 +59,7 @@ func main() {
         err := codegen.NewCacheGenerator(options.OutputDir, Template).Execute(nil)
         die(err)
     } else if generatorType == reflect.TypeOf(codegen.AppGenerator{}) {
-        outFileName := strings.Join([]string{string(options.OutputDir), "bidder", ".cpp"}, "/")
+        outFileName := strings.Join([]string{string(options.OutputDir), strings.Join([]string{string(options.Executable), ".cpp"},"")}, "/")
         f, err := os.Create(outFileName)
         die(err)
         err = codegen.NewAppGenerator(Template).Execute(f)
@@ -68,7 +68,7 @@ func main() {
         outFileName := strings.Join([]string{string(options.OutputDir), "CMakeFile.txt"}, "/")
         f, err := os.Create(outFileName)
         die(err)
-        err = codegen.NewCmakeGenerator("bidder",Template).Execute(f)
+        err = codegen.NewCmakeGenerator(string(options.Executable), Template).Execute(f)
         die(err)
     }
 
