@@ -1,4 +1,4 @@
-# Node.js bindings  
+# Node.js bindings - WORK IN PROGRESS  
 
 Those are optional and should not be used if package.json is available 
 ```bash
@@ -20,9 +20,9 @@ go run  bidder_generator.go --output-dir . --input-template ../templates/cmakejs
 
 4. Build vanilla-rtb.nodejs bidder  
 ```
-npm config set cmake_VANILLA_RTB_ROOT /path/to/framework
+npm config set cmake_vanilla_rtb_root /path/to/framework
 npm install
-###npm run bidder --config config.cfg ###  --config does not get passed 
+###npm run bidder --config config.cfg ###  --config does not work
 node bidder.js --config config.cfg
 ```
 
