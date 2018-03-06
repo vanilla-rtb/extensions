@@ -37,7 +37,7 @@ type GenerateFunc func(*Options, *template.Template) error
 
 var generatorTypes = map[string]GenerateFunc{
 	"cmake": func(o *Options, t *template.Template) error {
-		outFileName := strings.Join([]string{string(options.OutputDir), "CMakeFile.txt"}, "/")
+		outFileName := strings.Join([]string{string(options.OutputDir), "CMakeLists.txt"}, "/")
 		f, err := os.Create(outFileName)
 		if err != nil {
 			return err
