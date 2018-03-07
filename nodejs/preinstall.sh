@@ -1,7 +1,9 @@
 #!/bin/bash
 
-git clone --recursive https://github.com/venediktov/vanilla-rtb.git fwk 
-npm config set cmake_vanilla_rtb_root ${PWD}/fwk
+echo $1
+
+git clone --recursive https://github.com/venediktov/vanilla-rtb.git $1 
+npm config set cmake_vanilla_rtb_root ${PWD}/$1
 
 mkdir -p data
 mkdir -p generator

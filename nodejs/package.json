@@ -4,13 +4,13 @@
   "description": "A  Node.js wrapper to vanilla-rtb bidder",
   "main": "bidder.js",
   "scripts": {
-    "preinstall": "bash preinstall.sh",
+    "preinstall": "bash preinstall.sh $npm_package_config_vanilla_root",
     "install": "cmake-js -l verbose --std c++14 compile",
     "run": "node bidder.js --config config.cfg",
     "bidder": "node bidder.js"
   },
   "config": {
-    "cmake_vanilla_rtb_root": "fwk"
+    "vanilla_root": "fwk"
   },
   "dependencies": {
     "bindings": "^1.3.0",
