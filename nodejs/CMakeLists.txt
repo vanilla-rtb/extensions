@@ -1,9 +1,7 @@
-# TODO: this file needs to be generated
-#go run  bidder_generator.go --output-dir . --input-template ../templates/cmakejs.tmpl -g cmake
 cmake_minimum_required(VERSION 3.2)
 
 # Name of the project (will be the name of the plugin)
-project (vanilla-rtb CXX)
+project (vanilla-rtb-js CXX)
 
 if ( NOT DEFINED VANILLA_RTB_ROOT )
 message(FATAL_ERROR "Please setup VANILLA_RTB_ROOT a path  to vanilla-rtb sources")
@@ -40,13 +38,8 @@ include_directories(${CMAKE_JS_INC} ${VANILLA_RTB_ROOT} ${JSONV_ROOT} ${RTB_ROOT
 # Declare the location of the source files
 file(GLOB SOURCE_FILES  RELATIVE_PATH "." "*.cpp")
 file(GLOB_RECURSE CRUD_SOURCE_FILES ${VANILLA_RTB_ROOT}/CRUD/service/*.cpp)
-message("=============================================")
-message("${CRUD_SOURCE_FILES}")
-message("=============================================")
 list(APPEND SOURCE_FILES "${RTB_ROOT}/core/logger.cpp" "${CRUD_SOURCE_FILES}")
-message("=============================================")
-message("${SOURCE_FILES}")
-message("=============================================")
+
 
 # This line will tell CMake that we're building a shared library
 # from the above source files

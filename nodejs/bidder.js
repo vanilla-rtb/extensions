@@ -1,7 +1,7 @@
 // TODO: autogenerate this file with bootstraping code for bidder  
 "use strict";
 
-module.exports = require("bindings")("vanilla-rtb");
+module.exports = require("bindings")("vanilla-rtb-js");
 
 var addon = require(".");
 var assert = require("assert");

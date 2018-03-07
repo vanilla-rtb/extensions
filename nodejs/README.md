@@ -8,22 +8,9 @@ npm install boost-lib --save
 npm install bindings --save
 ```
 
-2.(TODO) Generate bindings for Node.js - in progress may not be needed 
+### Build vanilla-rtb-js bidder and Run 
 ```
-go run  bidder_generator.go  --output-dir . --input-template nodejs.tmpl --bindings 
-```
-
-3. (TODO) Generate CMakeLists.txt 
-```
-go run  bidder_generator.go --output-dir . --input-template ../templates/cmakejs.tmpl -g cmake
-```
-
-4. Build vanilla-rtb.nodejs bidder  
-```
-npm config set cmake_vanilla_rtb_root /path/to/framework
 npm install
-###npm run bidder --config config.cfg ###  --config does not work
 node bidder.js --config config.cfg
 ```
-
 
