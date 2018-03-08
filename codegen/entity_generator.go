@@ -76,8 +76,9 @@ var FuncMap = template.FuncMap{
     "GetReflectionValueName" : func(v reflect.Value) string {
         return v.Type().Name()
     },
-    "GetCacheFields" : func(t *reflect.Type) FieldEntities {
-        v := reflect.ValueOf(*t)
+    "GetCacheFields" : func(t reflect.Type) FieldEntities {
+
+        v := reflect.ValueOf(reflect.New(t).Elem().Interface())
 
         cachedFields := make([]FieldEntity, v.NumField())
 
@@ -92,7 +93,6 @@ var FuncMap = template.FuncMap{
                 IsKey:        len(is_key_str) > 0 && is_key_str == "yes",
                 IsValue:      len(is_value_str) > 0 && is_value_str == "yes",
             }
-            //fmt.Println(cachedFields[i].FieldName, "=>", cachedFields[i].FieldType, "=>", cachedFields[i].FieldTypeIPC, "=>", cachedFields[i].IsKey, "=>", cachedFields[i].IsValue)
         }
         return cachedFields
     },

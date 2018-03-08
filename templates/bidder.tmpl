@@ -109,16 +109,17 @@ int main(int argc, char *argv[]) {
      {{$entity_var :=  $entity | GetReflectionTypeName | ToLower -}}
      {{$entity_collection := printf "%s%s" $entity_var "s" -}}
      {{$output_fields := $entity | GetCacheFields | GetFieldValues -}}
+     {{$output_field := index $output_fields 0 -}}
      {{if NotLast $i $entities -}}
     auto retrieve_{{$entity_var}}_f = [&cacheLoader]( auto && key, auto&& ...)  {
         {{$entity | GetReflectionTypeName}}  {{$entity_var}} ;
-        auto &value =  {{$entity_var}}.{{$output_fields[0].FieldName}}; //TODO support for mutiple tupple 
+        auto &value =  {{$entity_var}}.{{$output_field.FieldName}}; //TODO support for mutiple tupple
         if (!cacheLoader.retrieve( {{$entity_var}},{{if eq $i 0}}key{{else}}*key{{end}})) {
             return boost::optional<decltype(value)>();
         }
         return boost::optional<decltype(value)>(value);
     };
-    {{- else -}}
+    {{ else -}}
     auto retrieve_{{$entity_var}}_f = [&cacheLoader]( auto && key, auto&& ...)  {
         std::vector<{{$entity | GetReflectionTypeName}}>  {{$entity_collection}} ;
         if (!cacheLoader.retrieve({{$entity_collection}},*key)) {
@@ -126,8 +127,8 @@ int main(int argc, char *argv[]) {
         }
         return boost::optional<decltype( {{$entity_collection}} )>( {{$entity_collection}} );
     };
-    {{ end -}}
-    {{ end -}}
+    {{end -}}
+    {{end -}}
     vanilla::core::Banker<BudgetManager> banker;
     auto retrieve_campaign_ads_f = [&](boost::optional<std::vector<ICOCampaign>> campaigns, auto && req, auto && imp)  {
         std::vector<Ad> retrieved_cached_ads;
@@ -158,9 +159,8 @@ int main(int argc, char *argv[]) {
             return bidder.bid(request,
                               //chained matchers
                               request.site.get().ref,
-                              {{range $entity := $entities -
+                              {{range $entity := $entities -}}
                               {{$entity_var :=  $entity | GetReflectionTypeName | ToLower -}}
-                              retrieve_{{$entity_var}}_f,
                               retrieve_{{$entity_var}}_f,
                               {{ end -}}
                               retrieve_campaign_ads_f

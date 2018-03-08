@@ -6,12 +6,12 @@ import (
 
 type Domain struct {
     name      string `cpp:"std::string"  ipc:"char_string" is_key:"yes"`
-    domain_id uint32 `cpp:"uint32_t" ipc:"uint32_t is_value: yes"`
+    domain_id uint32 `cpp:"uint32_t" ipc:"uint32_t" is_value:"yes"`
 }
 
 type ICOCampaign struct {
     domain_id   uint32 `cpp:"uint32_t" ipc:"uint32_t" is_key:"yes"`
-    campaign_id uint32 `cpp:"uint32_t" ipc:"uint32_t  is_value:"yes"`
+    campaign_id uint32 `cpp:"uint32_t" ipc:"uint32_t"  is_value:"yes"`
 }
 
 //register all types for generator even unrelated can go all in one registry
