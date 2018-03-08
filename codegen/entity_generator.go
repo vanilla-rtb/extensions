@@ -11,24 +11,25 @@ import (
     "time"
 )
 
-type CacheEntity struct {
+type FieldEntity struct {
     FieldName    string
     FieldType    string
     FieldTypeIPC string
     IsKey        bool
+    IsValue      bool
 }
 
-type CacheEntities []CacheEntity
+type FieldEntities []FieldEntity
 
-func (s CacheEntities) Len() int {
+func (s FieldEntities) Len() int {
     return len(s)
 }
 
-func (s CacheEntities) Less(i, j int) bool {
+func (s FieldEntities) Less(i, j int) bool {
     return bool2int8(s[i].IsKey) < bool2int8(s[j].IsKey)
 }
 
-func (s CacheEntities) Swap(i, j int) {
+func (s FieldEntities) Swap(i, j int) {
     s[i], s[j] = s[j], s[i]
 }
 
@@ -41,14 +42,14 @@ var FuncMap = template.FuncMap{
     "NotLast": func(x int, a interface{}) bool {
         return x != reflect.ValueOf(a).Len()-1
     },
-    "IsKey": func(storage CacheEntity) bool {
+    "IsKey": func(storage FieldEntity) bool {
         return storage.IsKey
     },
-    "IsIPC": func(storage CacheEntity) bool {
+    "IsIPC": func(storage FieldEntity) bool {
         return storage.FieldType != storage.FieldTypeIPC
     },
-    "GetCacheKeys": func(storage CacheEntities) CacheEntities {
-        keys := []CacheEntity{}
+    "GetFieldKeys": func(storage FieldEntities) FieldEntities {
+        keys := []FieldEntity{}
         for i := range storage {
             if storage[i].IsKey {
                 keys = append(keys, storage[i])
@@ -56,9 +57,44 @@ var FuncMap = template.FuncMap{
         }
         return keys
     },
-    "Sort": func(storage CacheEntities) CacheEntities {
+    "GetFieldValues": func(storage FieldEntities) FieldEntities {
+        values := []FieldEntity{}
+        for i := range storage {
+            if storage[i].IsValue {
+                values = append(values, storage[i])
+            }
+        }
+        return values
+    },
+    "Sort": func(storage FieldEntities) FieldEntities {
         sort.Reverse(storage)
         return storage
+    },
+    "GetReflectionTypeName" : func(t reflect.Type) string {
+         return t.Name()
+    },
+    "GetReflectionValueName" : func(v reflect.Value) string {
+        return v.Type().Name()
+    },
+    "GetCacheFields" : func(t *reflect.Type) FieldEntities {
+        v := reflect.ValueOf(*t)
+
+        cachedFields := make([]FieldEntity, v.NumField())
+
+        for i := 0; i < v.NumField(); i++ {
+            field := v.Type().Field(i)
+            is_key_str := field.Tag.Get("is_key")
+            is_value_str := field.Tag.Get("is_value")
+            cachedFields[i] = FieldEntity{
+                FieldType:    field.Tag.Get("cpp"),
+                FieldTypeIPC: field.Tag.Get("ipc"),
+                FieldName:    field.Name,
+                IsKey:        len(is_key_str) > 0 && is_key_str == "yes",
+                IsValue:      len(is_value_str) > 0 && is_value_str == "yes",
+            }
+            //fmt.Println(cachedFields[i].FieldName, "=>", cachedFields[i].FieldType, "=>", cachedFields[i].FieldTypeIPC, "=>", cachedFields[i].IsKey, "=>", cachedFields[i].IsValue)
+        }
+        return cachedFields
     },
 }
 
@@ -80,28 +116,30 @@ func (g *EntityGenerator) Execute(f *os.File) error {
 
     v := reflect.ValueOf(g.Entity)
 
-    cachedValues := make([]CacheEntity, v.NumField())
+    cachedFields := make([]FieldEntity, v.NumField())
 
     for i := 0; i < v.NumField(); i++ {
         field := v.Type().Field(i)
         is_key_str := field.Tag.Get("is_key")
-        cachedValues[i] = CacheEntity{
+        is_value_str := field.Tag.Get("is_value")
+        cachedFields[i] = FieldEntity{
             FieldType:    field.Tag.Get("cpp"),
             FieldTypeIPC: field.Tag.Get("ipc"),
             FieldName:    field.Name,
             IsKey:        len(is_key_str) > 0 && is_key_str == "yes",
+            IsValue:      len(is_value_str) > 0 && is_value_str == "yes",
         }
-        fmt.Println(cachedValues[i].FieldName, "=>", cachedValues[i].FieldType, "=>", cachedValues[i].FieldTypeIPC, "=>", cachedValues[i].IsKey)
+        fmt.Println(cachedFields[i].FieldName, "=>", cachedFields[i].FieldType, "=>", cachedFields[i].FieldTypeIPC, "=>", cachedFields[i].IsKey, "=>", cachedFields[i].IsValue)
     }
 
     err := g.Template.Execute(f, struct {
         Timestamp    time.Time
         Matchername  string
-        CachedValues []CacheEntity
+        CachedFields []FieldEntity
     }{
         Timestamp:    time.Now(),
         Matchername:  g.GeneratedBasicName,
-        CachedValues: cachedValues,
+        CachedFields: cachedFields,
     })
     return err
 }

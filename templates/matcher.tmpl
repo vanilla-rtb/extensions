@@ -5,10 +5,10 @@
  * File:   {{.Matchername | ToLower}}.hpp
  *
  */
-{{- $entities := .CachedValues|Sort}}
+{{- $fields := .CachedFields|Sort}}
 {{- $matcher_name := .Matchername}}
-{{- $cache_keys := .CachedValues|GetCacheKeys}}
-{{- $entities_length := len $entities}}
+{{- $cache_keys := .CachedFields|GetFieldKeys}}
+{{- $fields_length := len $fields}}
 
 #pragma once
 #ifndef {{.Matchername|ToUpper}}_HPP
@@ -30,13 +30,13 @@
 #include "core/tagged_tuple.hpp"
 
 struct {{.Matchername|Title}} {
-    {{range $entity := $entities -}}
-    {{$entity.FieldType}} {{$entity.FieldName}};
+    {{range $field := $fields -}}
+    {{$field.FieldType}} {{$field.FieldName}};
     {{end}}
-    {{.Matchername|Title}}( {{range $i,$entity := $entities}} {{$entity.FieldType}} &&{{$entity.FieldName}}{{if NotLast $i $entities}},{{end}}{{end}}) : {{range $i,$entity := $entities}}{{$entity.FieldName}}{ {{$entity.FieldName}} }{{if NotLast $i $entities}}, {{end}}{{end}}
+    {{.Matchername|Title}}( {{range $i,$field := $fields}} {{$field.FieldType}} &&{{$field.FieldName}}{{if NotLast $i $fields}},{{end}}{{end}}) : {{range $i,$field := $fields}}{{$field.FieldName}}{ {{$field.FieldName}} }{{if NotLast $i $fields}}, {{end}}{{end}}
     {}
 
-    {{.Matchername|Title}}(): {{range $i,$entity := $entities}}{{$entity.FieldName}}{}{{if NotLast $i $entities}}, {{end}}{{end}}
+    {{.Matchername|Title}}(): {{range $i,$field := $fields}}{{$field.FieldName}}{}{{if NotLast $i $fields}}, {{end}}{{end}}
     {}
 
     friend std::ostream &operator<<(std::ostream & os, const std::shared_ptr<{{.Matchername|Title}}> &value_ptr) {
@@ -45,8 +45,8 @@ struct {{.Matchername|Title}} {
     }
     friend std::ostream &operator<<(std::ostream & os, const {{.Matchername|Title}} &value)  {
         os
-        {{- range $i,$entity := $entities -}}
-           << value.{{$entity.FieldName}}{{if NotLast $i $entities}} << "|"{{end}}
+        {{- range $i,$field := $fields -}}
+           << value.{{$field.FieldName}}{{if NotLast $i $fields}} << "|"{{end}}
         {{- end -}};
         return os;
     }
@@ -57,11 +57,11 @@ struct {{.Matchername|Title}} {
         }
         std::vector<std::string> fields;
         boost::split(fields, record, boost::is_any_of("\t"), boost::token_compress_on);
-        if(fields.size() < {{$entities_length}} ) {
+        if(fields.size() < {{$fields_length}} ) {
             return is;
         }
-        {{range $i,$entity := $entities -}}
-        value.{{$entity.FieldName}} = boost::lexical_cast<decltype(value.{{$entity.FieldName}})>(fields.at({{$i}}).begin(),fields.at({{$i}}).size());
+        {{range $i,$field := $fields -}}
+        value.{{$field.FieldName}} = boost::lexical_cast<decltype(value.{{$field.FieldName}})>(fields.at({{$i}}).begin(),fields.at({{$i}}).size());
         {{end -}}
         return is;
     }
@@ -78,33 +78,33 @@ namespace ipc { namespace data {
         struct tag {}; // search on key
 
         {{.Matchername|ToLower}}_entity( const Alloc & a ) : alloc{a},
-        {{- range $i,$entity := $entities -}}
-        {{$entity.FieldName}}
-        {{- if (and (IsKey $entity) (IsIPC $entity)) -}}
+        {{- range $i,$field := $fields -}}
+        {{$field.FieldName}}
+        {{- if (and (IsKey $field) (IsIPC $field)) -}}
         {a}
         {{- else -}}
         {}
         {{- end -}}
-        {{if NotLast $i $entities}}, {{end -}}
+        {{if NotLast $i $fields}}, {{end -}}
         {{end}}
         {} //end-of-ctor
 
         Alloc alloc;
-        {{range $entity := $entities -}}
-        {{$entity.FieldTypeIPC}} {{$entity.FieldName}};
+        {{range $field := $fields -}}
+        {{$field.FieldTypeIPC}} {{$field.FieldName}};
         {{end}}
 
         template<typename Key, typename Serializable>
         void store(Key && key, Serializable  &&data)  {
-           {{range $i,$entity := $entities -}}
-           {{if (and (IsKey $entity) (IsIPC $entity)) -}}
+           {{range $i,$field := $fields -}}
+           {{if (and (IsKey $field) (IsIPC $field)) -}}
            auto value = key.template get<tag>();
-           {{$entity.FieldName}} = {{$entity.FieldTypeIPC}}(value.data(), value.size(), alloc);
+           {{$field.FieldName}} = {{$field.FieldTypeIPC}}(value.data(), value.size(), alloc);
            {{else -}}
-           {{if IsIPC $entity -}}
-           {{$entity.FieldName}} = {{$entity.FieldTypeIPC}}(data.{{$entity.FieldName}}.data(), data.{{$entity.FieldName}}.size(), alloc);
+           {{if IsIPC $field -}}
+           {{$field.FieldName}} = {{$field.FieldTypeIPC}}(data.{{$field.FieldName}}.data(), data.{{$field.FieldName}}.size(), alloc);
            {{else -}}
-           {{$entity.FieldName}} = data.{{$entity.FieldName}};
+           {{$field.FieldName}} = data.{{$field.FieldName}};
            {{end -}}
            {{end -}}
            {{end}}
@@ -112,18 +112,18 @@ namespace ipc { namespace data {
 
         template<typename Serializable>
         void retrieve(Serializable  & data) const {
-           {{range $i,$entity := $entities -}}
-           {{if IsIPC $entity -}}
-           data.{{$entity.FieldName}} = std::move(std::string({{$entity.FieldName}}.data(), {{$entity.FieldName}}.size()));
+           {{range $i,$field := $fields -}}
+           {{if IsIPC $field -}}
+           data.{{$field.FieldName}} = std::move(std::string({{$field.FieldName}}.data(), {{$field.FieldName}}.size()));
            {{else -}}
-           data.{{$entity.FieldName}} = {{$entity.FieldName}};
+           data.{{$field.FieldName}} = {{$field.FieldName}};
            {{end -}}
            {{end}}
         }
         //needed for ability to update after matching by calling index.modify(itr,entry)
         void operator()({{.Matchername|ToLower}}_entity &entry) const {
-            {{range $entity := $entities -}}
-            entry.{{$entity.FieldName}}={{$entity.FieldName}};
+            {{range $field := $fields -}}
+            entry.{{$field.FieldName}}={{$field.FieldName}};
             {{end}}
         }
     };
@@ -137,21 +137,21 @@ namespace ipc { namespace data {
                   boost::multi_index::tag<typename {{.Matchername|ToLower}}_entity<Alloc>::tag>,
                   boost::multi_index::composite_key<
                       {{.Matchername|ToLower}}_entity<Alloc>,
-                      {{range $entity := $entities -}}
-                      {{if IsIPC $entity -}}
-                      BOOST_MULTI_INDEX_MEMBER({{$matcher_name|ToLower}}_entity<Alloc>,typename {{$matcher_name|ToLower}}_entity<Alloc>::{{$entity.FieldTypeIPC}},{{$entity.FieldName}}),
+                      {{range $field := $fields -}}
+                      {{if IsIPC $field -}}
+                      BOOST_MULTI_INDEX_MEMBER({{$matcher_name|ToLower}}_entity<Alloc>,typename {{$matcher_name|ToLower}}_entity<Alloc>::{{$field.FieldTypeIPC}},{{$field.FieldName}}),
                       {{else -}}
-                      BOOST_MULTI_INDEX_MEMBER({{$matcher_name|ToLower}}_entity<Alloc>,{{$entity.FieldType}},{{$entity.FieldName}})
+                      BOOST_MULTI_INDEX_MEMBER({{$matcher_name|ToLower}}_entity<Alloc>,{{$field.FieldType}},{{$field.FieldName}})
                       {{end -}}
                       {{end -}}
                   >,
                   boost::multi_index::composite_key_compare<
-                      {{range $i,$entity := $entities -}}
-                      {{if IsIPC $entity -}}
+                      {{range $i,$field := $fields -}}
+                      {{if IsIPC $field -}}
                       ufw::any_str_less<Alloc>{{else -}}
-                      std::less<{{$entity.FieldType}}>
+                      std::less<{{$field.FieldType}}>
                       {{end -}}
-                      {{if NotLast $i $entities}} , {{end -}}
+                      {{if NotLast $i $fields}} , {{end -}}
                       {{end -}}
                   >
             >

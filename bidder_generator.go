@@ -50,7 +50,7 @@ var generatorTypes = map[string]GenerateFunc{
 		if err != nil {
 			return err
 		}
-		return codegen.NewAppGenerator(t).Execute(f)
+		return codegen.NewAppGenerator(options.OutputDir, "matchers", string(options.Executable), "ico", "LIB",t).Execute(f)
 	},
 	"matchers": func(o *Options, t *template.Template) error {
 		return codegen.NewCacheGenerator(options.OutputDir, t).Execute(nil)
