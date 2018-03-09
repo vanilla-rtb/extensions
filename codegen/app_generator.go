@@ -1,38 +1,27 @@
-
 package codegen
 
 import (
+    "fmt"
     "os"
-    "text/template"
-    "stubs"
+    "path"
     "reflect"
     "strings"
-    "github.com/jessevdk/go-flags"
+    "stubs"
+    "text/template"
     "time"
 )
 
-
 type AppGenerator struct {
-    OutputDir  flags.Filename
-    MatcherDir  string
-    AppName string
+    OutputDir      string
+    MatcherDir     string
+    AppName        string
     TargetingModel string
-    BuildType string
-    Template  *template.Template
+    BuildType      string
+    Template       *template.Template
 }
 
-func NewAppGenerator(dirName flags.Filename, appName string, model string, buildType string, tmpl *template.Template) *AppGenerator {
-    return &AppGenerator{
-        OutputDir:    dirName,
-        AppName: appName,
-        TargetingModel: model,
-        BuildType: buildType,
-        Template:     tmpl,
-    }
-}
-
-func (appGen *AppGenerator) Execute(f *os.File) error {
-    outFileName := strings.Join([]string{string(appGen.OutputDir), strings.Join([]string{strings.ToLower(appGen.AppName), ".cpp"}, "")}, "/")
+func (appGen *AppGenerator) Execute() error {
+    outFileName := path.Join(appGen.OutputDir, strings.ToLower(appGen.AppName)+".cpp")
     f, err := os.Create(outFileName)
     if err != nil {
         return err
@@ -41,20 +30,20 @@ func (appGen *AppGenerator) Execute(f *os.File) error {
 
     var cachedEntities []reflect.Type
     var ok bool
-    if cachedEntities , ok = stubs.Targetings[appGen.TargetingModel]; !ok {
-        return nil //TODO: return the actual error
+    if cachedEntities, ok = stubs.Targetings[appGen.TargetingModel]; !ok {
+        return fmt.Errorf("Failed to find TargetingModel %s", appGen.TargetingModel)
     }
 
     err = appGen.Template.Execute(f, struct {
-        Timestamp    time.Time
+        Timestamp      time.Time
         CachedEntities []reflect.Type
-        BidderName string
-        BuildType string
+        BidderName     string
+        BuildType      string
     }{
-        Timestamp:    time.Now(),
+        Timestamp:      time.Now(),
         CachedEntities: cachedEntities,
-        BidderName: appGen.AppName,
-        BuildType: appGen.BuildType,
+        BidderName:     appGen.AppName,
+        BuildType:      appGen.BuildType,
     })
     return err
 }

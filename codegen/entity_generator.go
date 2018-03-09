@@ -1,4 +1,3 @@
-
 package codegen
 
 import (
@@ -32,8 +31,6 @@ func (s FieldEntities) Less(i, j int) bool {
 func (s FieldEntities) Swap(i, j int) {
     s[i], s[j] = s[j], s[i]
 }
-
-
 
 var FuncMap = template.FuncMap{
     "ToUpper": strings.ToUpper,
@@ -70,13 +67,13 @@ var FuncMap = template.FuncMap{
         sort.Reverse(storage)
         return storage
     },
-    "GetReflectionTypeName" : func(t reflect.Type) string {
-         return t.Name()
+    "GetReflectionTypeName": func(t reflect.Type) string {
+        return t.Name()
     },
-    "GetReflectionValueName" : func(v reflect.Value) string {
+    "GetReflectionValueName": func(v reflect.Value) string {
         return v.Type().Name()
     },
-    "GetCacheFields" : func(t reflect.Type) FieldEntities {
+    "GetCacheFields": func(t reflect.Type) FieldEntities {
 
         v := reflect.ValueOf(reflect.New(t).Elem().Interface())
 

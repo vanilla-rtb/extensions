@@ -9,8 +9,6 @@ package main
 import (
 	"io/ioutil"
 	"log"
-	"os"
-	"strings"
 	"text/template"
 
 	"github.com/jessevdk/go-flags"
@@ -27,35 +25,38 @@ type Options struct {
 	InputTemplate flags.Filename `short:"i" long:"input-template" description:"InputTemplate file" default:"-"`
 	OutputDir     flags.Filename `short:"o" long:"output-dir" description:"OutputDir file" default:"-"`
 	GeneratorType func(string)   `short:"g" long:"generator-type" description:"GeneratorType" default:"matchers"`
-	Executable    string `short:"e" long:"executable" description:"Executable name" default:"bidder"`
-	TargetingName string `short:"T" long:"targeting-name" description:"Directory for header files" default:"-"`
-	BuildType     string `short:"B" long:"build_type" description:"Directory for header files" default:"APP"`
+	Executable    string         `short:"e" long:"executable" description:"Executable name" default:"bidder"`
+	TargetingName string         `short:"T" long:"targeting-name" description:"Directory for header files" default:"-"`
+	BuildType     string         `short:"B" long:"build_type" description:"Directory for header files" default:"APP"`
 }
 
 var options Options
 var parser = flags.NewParser(&options, flags.Default)
 
-type GenerateFunc func(*Options, *template.Template) error
+type GenerateFunc func(*template.Template) error
 
 var generatorTypes = map[string]GenerateFunc{
-	"cmake": func(o *Options, t *template.Template) error {
-		outFileName := strings.Join([]string{string(options.OutputDir), "CMakeLists.txt"}, "/")
-		f, err := os.Create(outFileName)
-		if err != nil {
-			return err
-		}
-		return codegen.NewCmakeGenerator(options.Executable, t).Execute(f)
+	"cmake": func(t *template.Template) error {
+		return (&codegen.CmakeGenerator{
+			Template:   t,
+			Executable: options.Executable,
+			OutpuDir:   string(options.OutputDir),
+		}).Execute()
 	},
-	"app": func(o *Options, t *template.Template) error {
-		outFileName := strings.Join([]string{string(options.OutputDir), strings.Join([]string{string(options.Executable), ".cpp"},"")}, "/")
-		f, err := os.Create(outFileName)
-		if err != nil {
-			return err
-		}
-		return codegen.NewAppGenerator(options.OutputDir, options.Executable, options.TargetingName, options.BuildType,t).Execute(f)
+	"app": func(t *template.Template) error {
+		return (&codegen.AppGenerator{
+			OutputDir:      string(options.OutputDir),
+			AppName:        options.Executable,
+			TargetingModel: options.TargetingName,
+			BuildType:      options.BuildType,
+			Template:       t,
+		}).Execute()
 	},
-	"matchers": func(o *Options, t *template.Template) error {
-		return codegen.NewCacheGenerator(options.OutputDir, t).Execute(nil)
+	"matchers": func(t *template.Template) error {
+		return (&codegen.CacheGenerator{
+			OutputDir: string(options.OutputDir),
+			Template:  t,
+		}).Execute()
 	},
 }
 
@@ -73,6 +74,7 @@ func main() {
 	die(err)
 
 	var tmpl = template.Must(template.New("").Funcs(codegen.FuncMap).Parse(string(templateContent)))
-	err = generateFunc(&options, tmpl)
+
+	err = generateFunc(tmpl)
 	die(err)
 }

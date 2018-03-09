@@ -1,34 +1,29 @@
-
 package codegen
 
 import (
     "os"
+    "path"
     "text/template"
     "time"
 )
 
-
 type CmakeGenerator struct {
     Template   *template.Template
     Executable string
+    OutpuDir   string
 }
 
-func NewCmakeGenerator(exe string, tmpl *template.Template) *CmakeGenerator {
-    return &CmakeGenerator{
-        Template:  tmpl,
-        Executable: exe,
+func (g *CmakeGenerator) Execute() error {
+    f, err := os.Create(path.Join(g.OutpuDir, "CMakeLists.txt"))
+    if err != nil {
+        return err
     }
-}
-
-func (g *CmakeGenerator) Execute(f *os.File) error {
-
-    err := g.Template.Execute(f, struct {
-        Timestamp    time.Time
-        Executable  string
+    defer f.Close()
+    return g.Template.Execute(f, struct {
+        Timestamp  time.Time
+        Executable string
     }{
-        Timestamp:    time.Now(),
-        Executable:   g.Executable,
+        Timestamp:  time.Now(),
+        Executable: g.Executable,
     })
-
-    return err
 }
