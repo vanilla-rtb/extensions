@@ -27,7 +27,9 @@ type Options struct {
 	InputTemplate flags.Filename `short:"i" long:"input-template" description:"InputTemplate file" default:"-"`
 	OutputDir     flags.Filename `short:"o" long:"output-dir" description:"OutputDir file" default:"-"`
 	GeneratorType func(string)   `short:"g" long:"generator-type" description:"GeneratorType" default:"matchers"`
-	Executable    flags.Filename `short:"e" long:"executable" description:"Executable name" default:"bidder"`
+	Executable    string `short:"e" long:"executable" description:"Executable name" default:"bidder"`
+	TargetingName string `short:"T" long:"targeting-name" description:"Directory for header files" default:"-"`
+	BuildType     string `short:"B" long:"build_type" description:"Directory for header files" default:"APP"`
 }
 
 var options Options
@@ -42,7 +44,7 @@ var generatorTypes = map[string]GenerateFunc{
 		if err != nil {
 			return err
 		}
-		return codegen.NewCmakeGenerator("bidder", t).Execute(f)
+		return codegen.NewCmakeGenerator(options.Executable, t).Execute(f)
 	},
 	"app": func(o *Options, t *template.Template) error {
 		outFileName := strings.Join([]string{string(options.OutputDir), strings.Join([]string{string(options.Executable), ".cpp"},"")}, "/")
@@ -50,7 +52,7 @@ var generatorTypes = map[string]GenerateFunc{
 		if err != nil {
 			return err
 		}
-		return codegen.NewAppGenerator(options.OutputDir, "matchers", string(options.Executable), "ico", "LIB",t).Execute(f)
+		return codegen.NewAppGenerator(options.OutputDir, options.Executable, options.TargetingName, options.BuildType,t).Execute(f)
 	},
 	"matchers": func(o *Options, t *template.Template) error {
 		return codegen.NewCacheGenerator(options.OutputDir, t).Execute(nil)

@@ -61,7 +61,11 @@ struct {{.Matchername|Title}} {
             return is;
         }
         {{range $i,$field := $fields -}}
-        value.{{$field.FieldName}} = boost::lexical_cast<decltype(value.{{$field.FieldName}})>(fields.at({{$i}}).begin(),fields.at({{$i}}).size());
+        {{if  eq $field.FieldType "std::string" -}}
+        value.{{$field.FieldName}} = fields.at({{$i}});
+        {{else -}}
+        value.{{$field.FieldName}} = boost::lexical_cast<{{$field.FieldType}}>(fields.at({{$i}}));
+        {{end -}}
         {{end -}}
         return is;
     }
@@ -137,11 +141,11 @@ namespace ipc { namespace data {
                   boost::multi_index::tag<typename {{.Matchername|ToLower}}_entity<Alloc>::tag>,
                   boost::multi_index::composite_key<
                       {{.Matchername|ToLower}}_entity<Alloc>,
-                      {{range $field := $fields -}}
+                      {{range $i,$field := $fields -}}
                       {{if IsIPC $field -}}
-                      BOOST_MULTI_INDEX_MEMBER({{$matcher_name|ToLower}}_entity<Alloc>,typename {{$matcher_name|ToLower}}_entity<Alloc>::{{$field.FieldTypeIPC}},{{$field.FieldName}}),
+                      BOOST_MULTI_INDEX_MEMBER({{$matcher_name|ToLower}}_entity<Alloc>,typename {{$matcher_name|ToLower}}_entity<Alloc>::{{$field.FieldTypeIPC}},{{$field.FieldName}}) {{if NotLast $i $fields}},{{end}}
                       {{else -}}
-                      BOOST_MULTI_INDEX_MEMBER({{$matcher_name|ToLower}}_entity<Alloc>,{{$field.FieldType}},{{$field.FieldName}})
+                      BOOST_MULTI_INDEX_MEMBER({{$matcher_name|ToLower}}_entity<Alloc>,{{$field.FieldType}},{{$field.FieldName}}) {{if NotLast $i $fields}},{{end}}
                       {{end -}}
                       {{end -}}
                   >,
@@ -166,7 +170,11 @@ template <typename Config,
 class {{.Matchername|Title}}Entity {
         using Cache = datacache::entity_cache<Memory, ipc::data::{{.Matchername|ToLower}}_container> ;
         using Tag = typename ipc::data::{{.Matchername|ToLower}}_entity<Alloc>::tag;
-        using Keys = vanilla::tagged_tuple<NameTag, std::string>;
+        using Keys = vanilla::tagged_tuple<Tag,
+        {{- range $i,$key := $cache_keys -}}
+        {{$key.FieldType}}{{if NotLast $i $cache_keys}},{{end}}
+        {{- end -}}
+        >;
         using {{.Matchername|Title}}Collection = std::vector<{{.Matchername|Title}}>;
     public:
         {{.Matchername|Title}}Entity(const Config &config):
@@ -196,12 +204,12 @@ class {{.Matchername|Title}}Entity {
         }
 
         template<typename ...Args>
-        bool retrieve({{.Matchername|Title}} &value, Args &&args...) {
+        bool retrieve({{.Matchername|Title}} &value, Args && ...args) {
             return cache.template retrieve<Tag>(value, std::forward<Args>(args)...);
         }
 
         template<typename ...Args>
-        bool retrieve({{.Matchername|Title}}Collection &collection, Args &&args...) {
+        bool retrieve({{.Matchername|Title}}Collection &collection, Args && ...args) {
             auto p = cache.template retrieve_raw<Tag>(std::forward<Args>(args)...);
             auto is_found = p.first != p.second;
             collection.reserve(500); //TODO: add this number as an option in stub's object Tag

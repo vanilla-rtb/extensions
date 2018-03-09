@@ -21,10 +21,9 @@ type AppGenerator struct {
     Template  *template.Template
 }
 
-func NewAppGenerator(dirName flags.Filename, matcherDir string, appName string, model string, buildType string, tmpl *template.Template) *AppGenerator {
+func NewAppGenerator(dirName flags.Filename, appName string, model string, buildType string, tmpl *template.Template) *AppGenerator {
     return &AppGenerator{
         OutputDir:    dirName,
-        MatcherDir: matcherDir,
         AppName: appName,
         TargetingModel: model,
         BuildType: buildType,
@@ -48,13 +47,11 @@ func (appGen *AppGenerator) Execute(f *os.File) error {
 
     err = appGen.Template.Execute(f, struct {
         Timestamp    time.Time
-        MatcherDir  string
         CachedEntities []reflect.Type
         BidderName string
         BuildType string
     }{
         Timestamp:    time.Now(),
-        MatcherDir:   appGen.MatcherDir,
         CachedEntities: cachedEntities,
         BidderName: appGen.AppName,
         BuildType: appGen.BuildType,
