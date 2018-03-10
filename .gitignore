@@ -1,5 +1,7 @@
 #Generated files
 *.hpp
+*.cpp
+CMakeFile.txt
 
 # Compiled Object files
 *.slo

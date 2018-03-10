@@ -23,7 +23,7 @@ The main reason behind such installation is  ```import "stubs"``` directive in o
 git clone --recursive clone https://github.com/vanilla-rtb/extensions 
 ```
 
-3. To execute  generator execute following commands 
+3. To execute  mathers generator execute following commands 
 ```
 cd extensions
 go run  bidder_generator.go --output-dir . --input-template templates/matcher.tmpl
@@ -62,5 +62,10 @@ type ICOCampaign struct {
 
 Currently we only generate C++ code for vanilla-rtb library but expect our generator produce an API to bridge golang 
 types like Domain with C++ IPC layer and later do the same for Java and PHP.
+
+4. To generate vanilla-rtb build scripts use following command
+```bash
+go run  bidder_generator.go --output-dir . --input-template templates/cmake.tmpl -g cmake
+```
 
 [![Join the chat at https://gitter.im/vanilla-rtb/Lobby](https://badges.gitter.im/vanilla-rtb/Lobby.svg)](https://gitter.im/vanilla-rtb/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) 
