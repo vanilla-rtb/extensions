@@ -15,16 +15,9 @@ type ICOCampaign struct {
 }
 
 //register all types for generator even unrelated can go all in one registry
-/*
-var TypeRegistry = map[string]reflect.Type{
-    reflect.TypeOf(Domain{}).Name():      reflect.ValueOf(Domain{}).Type(),
-    reflect.TypeOf(ICOCampaign{}).Name(): reflect.ValueOf(ICOCampaign{}).Type(),
-}*/
-var TypeRegistry = map[string]reflect.Type{
-    //reflect.TypeOf(Domain{}).Name():      reflect.ValueOf(Domain{}).Type(),
-    //reflect.TypeOf(ICOCampaign{}).Name(): reflect.ValueOf(ICOCampaign{}).Type(),
-    "Domain":      reflect.ValueOf(Domain{}).Type(),
-    "ICOCampaign": reflect.ValueOf(ICOCampaign{}).Type(),
+var TypeRegistry = []reflect.Type{
+    reflect.ValueOf(Domain{}).Type(),
+    reflect.ValueOf(ICOCampaign{}).Type(),
 }
 
 //agregate  targetings based on the bidder model the execution in the bidder will preserve as order of declaration
