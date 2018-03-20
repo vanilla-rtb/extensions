@@ -6,8 +6,7 @@
   "scripts": {
     "preinstall": "bash preinstall.sh $npm_package_config_vanilla_root",
     "install": "cmake-js -l verbose --std c++14 compile",
-    "run": "node bidder.js --config config.cfg",
-    "bidder": "./bidder"
+    "postinstall": "cd build; make install"
   },
   "config": {
     "vanilla_root": "fwk"

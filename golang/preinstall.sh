@@ -38,5 +38,14 @@ python ${GEN_ROOT}/ad.py &&
 python ${GEN_ROOT}/ico.py && 
 python ${GEN_ROOT}/campaign_budget.py > ../data/campaign_budget 
 
+#TODO generate all data format correcly reflection can be used to determine order of fields
+#current format of ico_domain is reverse domain_id\tdomain_name it should be in reverse order  
+#generator can automatically inspect and generate data in correct order
+#TODO: remove these 3 lines when Go generator for data is implemented
+mv ../data/ico_domains ../data/domain
+mv ../data/ico_campaign ../data/icocampaign
+mv ../data/ico_ads ../data/ads
+##################################
+
 popd && rm -rf  generator
 

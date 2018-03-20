@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
             ("{{ $bidder_name }}.{{ $entity_lcase }}_ipc_name", boost::program_options::value<std::string>(&d.{{ $entity_lcase }}_ipc_name)->default_value("vanilla-{{ $entity_lcase }}-ipc"), " {{ $entity_lcase }} ipc name")
             {{ end }}
 ////////////////////// GENERATE END ////////////////////////
-            ("{{ $bidder_name }}.ads_source", boost::program_options::value<std::string>(&d.ads_source)->default_value("data/ico_ads"), "ads_source file name")
+            ("{{ $bidder_name }}.ads_source", boost::program_options::value<std::string>(&d.ads_source)->default_value("data/ads"), "ads_source file name")
             ("{{ $bidder_name }}.ads_ipc_name", boost::program_options::value<std::string>(&d.ads_ipc_name)->default_value("vanilla-ads-ipc"), "ads ipc name")
             ("campaign-manager.ipc_name", boost::program_options::value<std::string>(&d.ipc_name),"campaign_budget IPC name")
             ("campaign-manager.budget_source", boost::program_options::value<std::string>(&d.campaign_budget_source)->default_value("data/campaign_budget"),"campaign_budget source file name")

@@ -1,7 +1,7 @@
 #include <vector>
 #include <string>
 #include <boost/scoped_array.hpp>
-#include "bid_handler.h"
+#include "bidder.h"
 
 extern int __main__(int, char**);
 
