@@ -5,10 +5,11 @@
 
 extern int __main__(int, char**);
 
-extern "C" { void runBidder(char *_1, char *_2) {} }
-
-void RunBidder(char * _1, char *_2) {
-    std::vector<std::string> args = { _1 , _2 } ;
+#ifdef __cplusplus
+extern "C" {
+#endif
+void RunBidder(char * _0, char *_1, char *_2) {
+    std::vector<std::string> args = { _0, _1 , _2 } ;
     //for(int i=0; i< slice.len; ++i) {
     //    args.push_back((char *)slice.data);
     //}
@@ -23,4 +24,7 @@ void RunBidder(char * _1, char *_2) {
     argv[args.size()] = nullptr ;
     __main__(args.size(), argv.get());
 }
+#ifdef __cplusplus
+}
+#endif
 

@@ -40,21 +40,45 @@ file(GLOB SOURCE_FILES  RELATIVE_PATH "." "*.cpp")
 file(GLOB_RECURSE CRUD_SOURCE_FILES ${VANILLA_RTB_ROOT}/CRUD/service/*.cpp)
 list(APPEND SOURCE_FILES "${RTB_ROOT}/core/logger.cpp" "${CRUD_SOURCE_FILES}")
 file(GLOB ARCHIVE_FILES  RELATIVE_PATH "." "*.a")
+file(GLOB_RECURSE BOOST_ARCHIVE_LIST ${Boost_LIBRARY_DIR}*.a)
+string(REPLACE ";" " " BOOST_ARCHIVES "${BOOST_ARCHIVE_LIST}")
 
 
-# This line will tell CMake that we're building a shared library
-# from the above source files
-# named after the project's name
-#add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+IF (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    SET ( CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR} )
+ENDIF()
 
-# This line will give our library file a .node extension without any "lib" prefix
-#set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".node")
+set(PROGRAM_PERMISSIONS_DEFAULT
+    OWNER_WRITE OWNER_READ OWNER_EXECUTE
+    GROUP_READ GROUP_EXECUTE
+    WORLD_READ WORLD_EXECUTE)
 
-# Essential library files to link to a node addon,
-# you should add this line in every CMake.js based project.
-# Define Boost dependencies there.
-target_link_libraries(${PROJECT_NAME} ${CMAKE_JS_LIB} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${ARCHIVE_FILES})
+IF ( GO2CPP ) 
+    message("Building GO2CPP interfaces...")
+    add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
+    list(REMOVE_ITEM ARCHIVE_FILES ${CMAKE_BINARY_DIR}/bid_handler.a)
+    set( ENV{CGO_LDFLAGS} "${ARCHIVE_FILES} ${CMAKE_BINARY_DIR}/lib${PROJECT_NAME}.a ${BOOST_ARCHIVES}")
+    #message("CGO_LDFLAGS=" $ENV{CGO_LDFLAGS})
+    add_custom_command(
+        TARGET
+        ${PROJECT_NAME}
+        POST_BUILD
+        COMMAND echo $ENV{CGO_LDFLAGS} | ${CMAKE_SOURCE_DIR}/go2cpp.sh ${CMAKE_BINARY_DIR}/bidder ${CMAKE_SOURCE_DIR}/bidder.go
+        #COMMAND go build  -buildmode=exe -o ${CMAKE_BINARY_DIR}/bidder ${CMAKE_SOURCE_DIR}/bidder.go
+    )
+    install(FILES ${CMAKE_BINARY_DIR}/bidder DESTINATION ${CMAKE_INSTALL_PREFIX} PERMISSIONS ${PROGRAM_PERMISSIONS_DEFAULT})
+ELSE ()
+    message("Building CPP2GO interfaces...")
+    list(REMOVE_ITEM SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/bidder_binding.cpp)
+    add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+    target_link_libraries(${PROJECT_NAME} ${CMAKE_JS_LIB} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${ARCHIVE_FILES})
+    install( TARGETS ${PROJECT_NAME}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}
+        PERMISSIONS ${PROGRAM_PERMISSIONS_DEFAULT}
+    )
+ENDIF()
+
 
 message(${Boost_LIBRARIES})
+#message(${BOOST_ARCHIVES})
 

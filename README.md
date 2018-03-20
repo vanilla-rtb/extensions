@@ -37,9 +37,21 @@ The code you place in the stubs package needs to register your stub classes it's
 Just add more  Objects to the registry  and ```codegen``` will automatically regenerate all your stubs.  
 
 ```
-var TypeRegistry = map[string]reflect.Type {
-	reflect.TypeOf(Domain{}).Name() : reflect.ValueOf(Domain{}).Type(),
-	reflect.TypeOf(ICOCampaign{}).Name(): reflect.ValueOf(ICOCampaign{}).Type(),
+var TypeRegistry = []reflect.Type{
+    reflect.ValueOf(Domain{}).Type(),
+    reflect.ValueOf(ICOCampaign{}).Type(),
+}
+```
+
+It also needs to group stubs types by targeting model as shown below , the order in array coresponds to order executed by bidder in real time 
+
+```
+//agregate  targetings based on the bidder model the execution in the bidder will preserve as order of declaration
+var Targetings = map[string][]reflect.Type{
+    "ico": []reflect.Type{
+        reflect.ValueOf(Domain{}).Type(),
+        reflect.ValueOf(ICOCampaign{}).Type(),
+    },
 }
 ```
 
