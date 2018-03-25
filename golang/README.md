@@ -7,3 +7,47 @@ by vanilla-rtb bidders - the generator replaces a need for manual programming as
 
 3. Users should be able to either just use generators and run C++ code directly or generate both C++ and CPPGO layer to integrate with their existing DSP written in Go.
 
+To run integration examples :
+
+Running vanilla-rtb bidder as applcation and linked in library written in Go as a bid handler 
+```
+BUILDTYPE=cpp2go npm install
+./build/vanilla-rtb-go --config config.cfg 
+```
+
+This process builds bid_handler.a from bid_handler.go and links it with bidder.cpp and other vanilla-rtb sources 
+
+
+The process utlizes following commands  
+
+```
+go run  bidder_generator.go --output-dir golang/ --input-template templates/bidder.tmpl -g app -T ico -B APP 
+go run  bidder_generator.go --output-dir golang/ --input-template templates/matcher.tmpl -g matchers
+cd golang
+go build -buildmode=c-archive bid_handler.go
+
+```
+
+Another way is to use bidder.go not only  as a handler but also as a main entry point 
+```
+BUILDTYPE=go2cpp npm install
+./bidder --config config.cfg 
+```
+
+What happens in this case is bidder.cpp is generted and compiled as a library ( e.g. __main__() instead of main() generated with -B LIB )
+Internally preinstall.sh and CMakelists.txt are using following commands
+```
+go run  bidder_generator.go --output-dir golang/ --input-template templates/bidder.tmpl -g app -T ico -B LIB
+go run  bidder_generator.go --output-dir golang/ --input-template templates/matcher.tmpl -g matchers
+cd golang
+go build -buildmode=c-archive bidder.go
+export CGO_LDFLAGS="bidder.a vanilla-rtb-go.a"
+go build -buildmode=exe bidder.go
+```
+
+Running second type of build is slightly different as the last command will link everything into bidder executable 
+
+```
+./bidder --config config.cfg 
+```
+
