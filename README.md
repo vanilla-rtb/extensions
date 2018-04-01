@@ -121,10 +121,10 @@ type GeoCampaign struct {
 }
 ```
 
-Currently we only generate C++ code for vanilla-rtb library but expect our generator produce an API to bridge golang 
-types like Domain with C++ IPC layer and later do the same for Java and PHP.
-
-5. To generate vanilla-rtb stand alone C++ project build use following command
+Currently we generate C++ bidder code based on vanilla-rtb library API and manually code other languages bindings.
+Ideally we should generate both the C++ layer and the bindings.
+ 
+5. Experimental generator for vanilla-rtb stand alone C++ project 
 ```bash
 go run  bidder_generator.go --output-dir . --input-template templates/cmake.tmpl -g cmake
 ```
