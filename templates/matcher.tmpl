@@ -27,7 +27,17 @@
 #include <boost/multi_index/member.hpp>
 #include <boost/multi_index/composite_key.hpp>
 #include "rtb/datacache/any_str_ops.hpp"
+#include "rtb/common/split_string.hpp"
 #include "core/tagged_tuple.hpp"
+
+#if BOOST_VERSION <= 106000
+#include <boost/utility/string_ref.hpp>
+namespace boost {
+    using string_view = string_ref;
+}
+#else
+#include <boost/utility/string_view.hpp>
+#endif
 
 struct {{.Matchername|Title}} {
     {{range $field := $fields -}}
@@ -55,8 +65,10 @@ struct {{.Matchername|Title}} {
         if ( !std::getline(is, record) ){
             return is;
         }
-        std::vector<std::string> fields;
-        boost::split(fields, record, boost::is_any_of("\t"), boost::token_compress_on);
+        //std::vector<std::string> fields;
+        //boost::split(fields, record, boost::is_any_of("\t"), boost::token_compress_on);
+        std::vector<std::string_view> fields;
+        vanilla::common::split_string(fields, record, "\t");
         if(fields.size() < {{$fields_length}} ) {
             return is;
         }
