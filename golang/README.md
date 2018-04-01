@@ -12,7 +12,7 @@ To run integration examples :
 Running vanilla-rtb bidder as applcation and linked in library written in Go as a bid handler 
 ```
 BUILDTYPE=cpp2go npm install
-./build/vanilla-rtb-go --config config.cfg 
+./bidder-cpp --config config.cfg 
 ```
 
 This process builds bid_handler.a from bid_handler.go and links it with bidder.cpp and other vanilla-rtb sources 
@@ -31,7 +31,7 @@ go build -buildmode=c-archive bid_handler.go
 Another way is to use bidder.go not only  as a handler but also as a main entry point 
 ```
 BUILDTYPE=go2cpp npm install
-./bidder --config config.cfg 
+./bidder-go --config config.cfg 
 ```
 
 What happens in this case is bidder.cpp is generted and compiled as a library ( e.g. __main__() instead of main() generated with -B LIB )
@@ -48,6 +48,6 @@ go build -buildmode=exe bidder.go
 Running second type of build is slightly different as the last command will link everything into bidder executable 
 
 ```
-./bidder --config config.cfg 
+./bidder-go --config config.cfg 
 ```
 

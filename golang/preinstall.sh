@@ -2,10 +2,13 @@
 
 echo $1
 
+rm -rf $1
+
 git clone --recursive https://github.com/venediktov/vanilla-rtb.git $1 
 npm config set cmake_vanilla_rtb_root ${PWD}/$1
 
 rm -rf build/
+rm -rf bidder.h bid_handler.h 
 
 case "$BUILDTYPE" in
    cpp2go)

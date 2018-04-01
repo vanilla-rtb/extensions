@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.2)
 
 # Name of the project (will be the name of the plugin)
-project (vanilla-rtb-go CXX)
+project (bidder-cpp CXX)
 
 if ( NOT DEFINED VANILLA_RTB_ROOT )
 message(FATAL_ERROR "Please setup VANILLA_RTB_ROOT a path  to vanilla-rtb sources")
@@ -63,10 +63,10 @@ IF ( GO2CPP )
         TARGET
         ${PROJECT_NAME}
         POST_BUILD
-        COMMAND echo $ENV{CGO_LDFLAGS} | ${CMAKE_SOURCE_DIR}/go2cpp.sh ${CMAKE_BINARY_DIR}/bidder ${CMAKE_SOURCE_DIR}/bidder.go
+        COMMAND echo $ENV{CGO_LDFLAGS} | ${CMAKE_SOURCE_DIR}/go2cpp.sh ${CMAKE_BINARY_DIR}/bidder-go ${CMAKE_SOURCE_DIR}/bidder.go
         #COMMAND go build  -buildmode=exe -o ${CMAKE_BINARY_DIR}/bidder ${CMAKE_SOURCE_DIR}/bidder.go
     )
-    install(FILES ${CMAKE_BINARY_DIR}/bidder DESTINATION ${CMAKE_INSTALL_PREFIX} PERMISSIONS ${PROGRAM_PERMISSIONS_DEFAULT})
+    install(FILES ${CMAKE_BINARY_DIR}/bidder-go DESTINATION ${CMAKE_INSTALL_PREFIX} PERMISSIONS ${PROGRAM_PERMISSIONS_DEFAULT})
 ELSE ()
     message("Building CPP2GO interfaces...")
     list(REMOVE_ITEM SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/bidder_binding.cpp)
