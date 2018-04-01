@@ -24,7 +24,7 @@ Code Generators and Extensions for vanilla-rtb stack
 
 Recommended build environment and dependencies:
 
-**Linux or MacOS, CMake >= 3.8, GCC >= 7.0 or Clang >= 4.0, npm >= 5.7.1** 
+**Linux or MacOS, Go >= 1.9 , CMake >= 3.8, GCC >= 7.0 or Clang >= 4.0, npm >= 5.7.1** 
 ```
 clang -x c++ -std=c++14 -dM -E - </dev/null |grep cplusplus
 g++   -x c++ -std=c++14 -dM -E - </dev/null |grep cplusplus
