@@ -22,13 +22,17 @@ Code Generators and Extensions for vanilla-rtb stack
 [![Join the chat at https://gitter.im/vanilla-rtb/Lobby](https://badges.gitter.im/vanilla-rtb/Lobby.svg)](https://gitter.im/vanilla-rtb/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) 
 [![GPLv3 license](https://img.shields.io/badge/License-GPLv3-blue.svg)](http://perso.crans.org/besson/LICENSE.html)
 
-**Recommended build environment and dependencies: Linux or MacOS, CMake >= 3.8, GCC >= 7.0 or Clang >= 4.0, npm >= 5.7.1** 
+Recommended build environment and dependencies:
+
+**Linux or MacOS, CMake >= 3.8, GCC >= 7.0 or Clang >= 4.0, npm >= 5.7.1** 
 ```
 clang -x c++ -std=c++14 -dM -E - </dev/null |grep cplusplus
 g++   -x c++ -std=c++14 -dM -E - </dev/null |grep cplusplus
 ```
 Output : ```#define __cplusplus 201402L```
+
 ```npm --version```
+
 Output:```5.7.1```
 
 1. To install vanilla-rtb-extensions golang libraries run  ```install.sh``` or execute below commands
