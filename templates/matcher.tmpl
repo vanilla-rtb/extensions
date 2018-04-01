@@ -30,15 +30,6 @@
 #include "rtb/common/split_string.hpp"
 #include "core/tagged_tuple.hpp"
 
-#if BOOST_VERSION <= 106000
-#include <boost/utility/string_ref.hpp>
-namespace boost {
-    using string_view = string_ref;
-}
-#else
-#include <boost/utility/string_view.hpp>
-#endif
-
 struct {{.Matchername|Title}} {
     {{range $field := $fields -}}
     {{$field.FieldType}} {{$field.FieldName}};
@@ -65,10 +56,13 @@ struct {{.Matchername|Title}} {
         if ( !std::getline(is, record) ){
             return is;
         }
-        //std::vector<std::string> fields;
-        //boost::split(fields, record, boost::is_any_of("\t"), boost::token_compress_on);
+#if __cplusplus >= 201402L
         std::vector<std::string_view> fields;
         vanilla::common::split_string(fields, record, "\t");
+#else
+        std::vector<std::string> fields;
+        boost::split(fields, record, boost::is_any_of("\t"), boost::token_compress_on);
+#endif
         if(fields.size() < {{$fields_length}} ) {
             return is;
         }
