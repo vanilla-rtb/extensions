@@ -80,6 +80,11 @@ namespace ipc { namespace data {
 
         //for tagging in multi_index_container
         struct tag {}; // search on key
+        {{range $field := $fields -}}
+        {{if (IsKey $field) -}}
+        struct {{$field.FieldName}}_tag {};
+        {{end -}}
+        {{end}}
 
         {{.Matchername|ToLower}}_entity( const Alloc & a ) : alloc{a},
         {{- range $i,$field := $fields -}}
@@ -102,8 +107,8 @@ namespace ipc { namespace data {
         void store(Key && key, Serializable  &&data)  {
            {{range $i,$field := $fields -}}
            {{if (and (IsKey $field) (IsIPC $field)) -}}
-           auto value = key.template get<tag>();
-           {{$field.FieldName}} = {{$field.FieldTypeIPC}}(value.data(), value.size(), alloc);
+           auto value{{$i}} = key.template get<{{$field.FieldName}}_tag>();
+           {{$field.FieldName}} = {{$field.FieldTypeIPC}}(value{{$i}}.data(), value{{$i}}.size(), alloc);
            {{else -}}
            {{if IsIPC $field -}}
            {{$field.FieldName}} = {{$field.FieldTypeIPC}}(data.{{$field.FieldName}}.data(), data.{{$field.FieldName}}.size(), alloc);
@@ -170,9 +175,9 @@ template <typename Config,
 class {{.Matchername|Title}}Entity {
         using Cache = datacache::entity_cache<Memory, ipc::data::{{.Matchername|ToLower}}_container> ;
         using Tag = typename ipc::data::{{.Matchername|ToLower}}_entity<Alloc>::tag;
-        using Keys = vanilla::tagged_tuple<Tag,
+        using Keys = vanilla::tagged_tuple<
         {{- range $i,$key := $cache_keys -}}
-        {{$key.FieldType}}{{if NotLast $i $cache_keys}},{{end}}
+        typename ipc::data::{{$matcher_name|ToLower}}_entity<Alloc>::{{$key.FieldName}}_tag, {{$key.FieldType}}{{if NotLast $i $cache_keys}},{{end}}
         {{- end -}}
         >;
         using {{.Matchername|Title}}Collection = std::vector<{{.Matchername|Title}}>;
@@ -206,6 +211,16 @@ class {{.Matchername|Title}}Entity {
         template<typename ...Args>
         bool retrieve({{.Matchername|Title}} &value, Args && ...args) {
             return cache.template retrieve<Tag>(value, std::forward<Args>(args)...);
+        }
+
+        template<typename ...Args>
+        bool retrieve({{.Matchername|Title}} &value, std::tuple<Args...> & tuple) {
+            return this->retrieve<Tag>(value, tuple , std::make_index_sequence<sizeof...(Args)>());
+        }
+
+        template<typename ...Args, size_t... Is>
+        bool retrieve({{.Matchername|Title}} &value, std::tuple<Args...> & tuple, std::index_sequence<Is...>) {
+            return cache.template retrieve<Tag>(value, std::get<Is>(tuple)...);
         }
 
         template<typename ...Args>
