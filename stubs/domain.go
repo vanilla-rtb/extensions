@@ -5,7 +5,7 @@ import (
 )
 
 type Domain struct {
-    name      string `cpp:"std::string"  ipc:"char_string" is_key:"yes"`
+    name      string `cpp:"std::string"  ipc:"shared_string" is_key:"yes"`
     domain_id uint32 `cpp:"uint32_t" ipc:"uint32_t" is_value:"yes"`
 }
 
@@ -16,8 +16,8 @@ type ICOCampaign struct {
 
 
 type Geo struct {
- city string `cpp:"std::string"  ipc:"char_string" is_key:"yes"`
- country string `cpp:"std::string"  ipc:"char_string" is_key:"yes"`
+ city string `cpp:"std::string"  ipc:"shared_string" is_key:"yes"`
+ country string `cpp:"std::string"  ipc:"shared_string" is_key:"yes"`
  geo_id uint32 `cpp:"uint32_t" ipc:"uint32_t" is_value:"yes"`
 }
 

@@ -76,7 +76,7 @@ namespace ipc { namespace data {
 
     template <typename Alloc>
     struct {{.Matchername|ToLower}}_entity {
-        using char_string =  boost::interprocess::basic_string<char, std::char_traits<char>, Alloc>;
+        using shared_string =  boost::interprocess::basic_string<char, std::char_traits<char>, Alloc>;
 
         //for tagging in multi_index_container
         struct tag {}; // search on key

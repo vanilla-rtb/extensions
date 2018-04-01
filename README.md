@@ -92,7 +92,7 @@ var Targetings = map[string][]reflect.Type{
 ```
 
 The type passed to registry must be annotated with golang tags for ability to wire in-proc and shared memory correctly 
-For types that allocate on the heap there needs to be a conversion ```cpp:"std::string" ipc:"char_string"```
+For types that allocate on the heap there needs to be a conversion ```cpp:"std::string" ipc:"shared_string"```
 
 The Domain struct tags implicetely tells generator that the lookup is done by single key ```domain name``` , the sorage structure generated for shared memory acess can be expressed as Map<string, Domain> where string type is a key and Domain type is a value. VanillaRTB relies on those structures when matching campaigns and it uses these set of ```implicitly chained structures``` where output from first becomes input for the next step in matching rule, if any matcher in the chain fails before it reaches the last matcher aka campaign-collector no bid is returned by vanilla-rtb stack.
 The terminal function selectingthe Ads is not included in the stubs it's implicit it comes as library by default accepting collection of Campaigns.
@@ -100,7 +100,7 @@ When looking at "ico" or "geo" examples in both cases collection of ICOCampaign 
 
 ```
 type Domain struct {
-    name      string `cpp:"std::string"  ipc:"char_string" is_key:"yes"`
+    name      string `cpp:"std::string"  ipc:"shared_string" is_key:"yes"`
     domain_id uint32 `cpp:"uint32_t" ipc:"uint32_t"`
 }
 
@@ -110,8 +110,8 @@ type ICOCampaign struct {
 }
 
 type Geo struct {
- city string `cpp:"std::string"  ipc:"char_string" is_key:"yes"`
- country string `cpp:"std::string"  ipc:"char_string" is_key:"yes"`
+ city string `cpp:"std::string"  ipc:"shared_string" is_key:"yes"`
+ country string `cpp:"std::string"  ipc:"shared_string" is_key:"yes"`
  geo_id uint32 `cpp:"uint32_t" ipc:"uint32_t" is_value:"yes"`
 }
 
