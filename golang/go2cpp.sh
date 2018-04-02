@@ -1,6 +1,16 @@
 #!/bin/bash
 
-export CGO_LDFLAGS="-Wl,--start-group "$(< /dev/stdin)" -Wl,--end-group"
+case $(uname -s) in
+    Darwin)
+    export CGO_LDFLAGS=$(< /dev/stdin)
+    ;;
+    Linux)
+    export CGO_LDFLAGS="-Wl,--start-group "$(< /dev/stdin)" -Wl,--end-group"
+    ;;
+    *)
+    echo "Unsupported OS!"
+    ;;
+esac
 
 echo CGO_LDFLAGS=${CGO_LDFLAGS}
 
