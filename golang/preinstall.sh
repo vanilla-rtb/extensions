@@ -8,7 +8,7 @@ git clone --recursive https://github.com/venediktov/vanilla-rtb.git $1
 npm config set cmake_vanilla_rtb_root ${PWD}/$1
 
 rm -rf build/
-rm -rf bidder.h bid_handler.h 
+rm -rf bidder.h bid_handler.h *.a
 
 case "$BUILDTYPE" in
    cpp2go)
@@ -23,7 +23,7 @@ case "$BUILDTYPE" in
    npm config set cmake_${BUILDTYPE}=BUILDTYPE
    go run  ../bidder_generator.go --output-dir . --input-template ../templates/biddergo.tmpl -g app -T ico -B LIB
    go run  ../bidder_generator.go --output-dir . --input-template ../templates/matcher.tmpl -g matchers
-   go build -buildmode=c-archive bidder.go
+   CGO_LDFLAGS_ALLOW='-Wl,-unresolved-symbols=ignore-all' go build -buildmode=c-archive bidder.go
    ;;
    *)
    echo "Usage: BUILDTYPE=<go2cpp|cpp2go> npm install"

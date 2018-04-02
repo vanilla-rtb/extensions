@@ -25,16 +25,53 @@ Code Generators and Extensions for vanilla-rtb stack
 Recommended build environment and dependencies:
 
 **Linux or MacOS, Go >= 1.9 , CMake >= 3.8, GCC >= 7.0 or Clang >= 4.0, npm >= 5.7.1** 
-```
-clang -x c++ -std=c++14 -dM -E - </dev/null |grep cplusplus
-g++   -x c++ -std=c++14 -dM -E - </dev/null |grep cplusplus
-```
-Output : ```#define __cplusplus 201402L```
 
 ```npm --version```
 
 Output:```5.7.1```
 
+**npm installation(Linux):**
+
+```
+sudo apt-get remove nodejs ^node-* nodejs-*
+sudo apt-get autoremove
+sudo apt-get clean
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+sudo apt-get install nodejs
+```
+
+Then :
+```
+curl https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | sh
+```
+After this, open a new terminal and check the npm version:
+
+```
+npm --version
+```
+
+**npm installation(MacOS HomeBrew):**
+```
+brew update
+brew install node
+```
+
+Go 1.9 ( Linux )
+
+```
+$ sudo add-apt-repository ppa:gophers/archive
+$ sudo apt-get update
+$ sudo apt-get install golang-1.9-go
+$ sudo ln -s -f /usr/lib/go-1.9/bin/go /usr/bin/go
+$ sudo ln -s -f /usr/lib/go-1.9/bin/gofmt /usr/bin/gofmt
+```
+
+Go 1.9 ( MacOS )
+
+```
+brew update
+brew install go
+```
 1. To install vanilla-rtb-extensions golang libraries run  ```install.sh``` or execute below commands
 
 ```bash

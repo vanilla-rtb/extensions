@@ -14,6 +14,17 @@
 #ifndef {{.Matchername|ToUpper}}_HPP
 #define {{.Matchername|ToUpper}}_HPP
 
+#if __MAC__
+#if __cplusplus >= 201402L
+#define STRING_VIEW_DEFINED 1
+#endif
+#elif __GNUC__
+#if __cplusplus >= 201703L
+#define STRING_VIEW_DEFINED 1
+#endif
+#endif
+
+
 #include <string>
 #include <cstdint>
 #include <iostream>
@@ -56,7 +67,7 @@ struct {{.Matchername|Title}} {
         if ( !std::getline(is, record) ){
             return is;
         }
-#if __cplusplus >= 201402L
+#if defined(STRING_VIEW_DEFINED)
         std::vector<std::string_view> fields;
         vanilla::common::split_string(fields, record, "\t");
 #else

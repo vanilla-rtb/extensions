@@ -1,6 +1,6 @@
 package main 
 //#cgo darwin  LDFLAGS: -Wl,-undefined -Wl,dynamic_lookup
-//#cgo !darwin LDFLAGS: -Wl,-unresolved-symbols=ignore-all
+//#cgo !darwin LDFLAGS: -lstdc++ -lrt -Wl,-unresolved-symbols=ignore-all
 //#include <stdlib.h>
 //#ifdef __cplusplus
 //extern "C" {
