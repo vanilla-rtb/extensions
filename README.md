@@ -17,10 +17,14 @@
 [5]: http://www.github.com/vanilla-rtb
 
 # VanillaRTB extensions
-Code Generators and Extensions for vanilla-rtb stack 
+Code Generators and Extensions for VanillaRTB framework in Node.js , Go, Java , PHP, Python.
 
 [![Join the chat at https://gitter.im/vanilla-rtb/Lobby](https://badges.gitter.im/vanilla-rtb/Lobby.svg)](https://gitter.im/vanilla-rtb/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) 
 [![GPLv3 license](https://img.shields.io/badge/License-GPLv3-blue.svg)](http://perso.crans.org/besson/LICENSE.html)
+[![Installing Dependencies](https://img.shields.io/badge/Dependencies-wiki-green.svg)](https://github.com/vanilla-rtb/extensions/wiki/Installing-Dependencies)
+
+### Contributing [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/vanilla-rtb/extensions/issues)
+
 
 Recommended build environment and dependencies:
 
