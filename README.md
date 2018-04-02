@@ -183,4 +183,6 @@ Ideally we should generate both the C++ layer and the bindings.
 go run  bidder_generator.go --output-dir . --input-template templates/cmake.tmpl -g cmake
 ```
 
-[![Join the chat at https://gitter.im/vanilla-rtb/Lobby](https://badges.gitter.im/vanilla-rtb/Lobby.svg)](https://gitter.im/vanilla-rtb/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) 
+[![Join the chat at https://gitter.im/vanilla-rtb/Lobby](https://badges.gitter.im/vanilla-rtb/Lobby.svg)](https://gitter.im/vanilla-rtb/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/vanilla-rtb/extensions/issues)
+[![Installing Dependencies](https://img.shields.io/badge/Dependencies-wiki-green.svg)](https://github.com/vanilla-rtb/extensions/wiki/Installing-Dependencies)
