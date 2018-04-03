@@ -17,7 +17,7 @@
 [5]: http://www.github.com/vanilla-rtb
 
 # VanillaRTB extensions
-Code Generators and Extensions for VanillaRTB framework in Node.js , Go, Java , PHP, Python.
+Code Generators and Extensions for VanillaRTB framework in Node.js, Go, Java , PHP, Python.
 
 [![Join the chat at https://gitter.im/vanilla-rtb/Lobby](https://badges.gitter.im/vanilla-rtb/Lobby.svg)](https://gitter.im/vanilla-rtb/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) 
 [![GPLv3 license](https://img.shields.io/badge/License-GPLv3-blue.svg)](http://perso.crans.org/besson/LICENSE.html)
@@ -75,7 +75,7 @@ Go 1.9 ( MacOS )
 brew update
 brew install go
 ```
-1. To install vanilla-rtb-extensions golang libraries run  ```install.sh``` or execute below commands
+### 1. To install vanilla-rtb-extensions golang libraries run  ```install.sh``` or execute below commands
 
 ```bash
 rm -rf $GOPATH/src/github.com/vanilla-rtb/
@@ -92,18 +92,19 @@ without actually installing in the ```$GOPATH\pkg``` folder .
 
 The main reason behind such installation is  ```import "stubs"``` directive in our bidder_generator.go uses relative path allowing you to import your own stubs and  generate your own targeting cache not just what we provide with our examples
 
-2. Download vanilla-rtb extensions to working folder 
+### 2. Download vanilla-rtb extensions to working folder 
 ```
 git clone --recursive clone https://github.com/vanilla-rtb/extensions 
 ```
 
-3. To generate mathers and standalone application code execute following commands 
+### 3. To generate targeting code and application utilizing it execute following command
+s 
 ```
 cd extensions
 go run  bidder_generator.go --output-dir . --input-template templates/matcher.tmpl -g matchers
 go run  bidder_generator.go --output-dir . --input-template templates/biddergo.tmpl -g app -T ico -B APP
 ```
-4. To generate bidder library for later binding to other languages like NodeJS/Go/etc run following command sequence  
+### 4. To generate bidder library for later binding to other languages like NodeJS/Go/etc run following command sequence  
 ```
 go run  bidder_generator.go --output-dir . --input-template templates/matcher.tmpl -g matchers
 go run  ../bidder_generator.go --output-dir . --input-template ../templates/biddergo.tmpl -g app -T ico -B LIB
