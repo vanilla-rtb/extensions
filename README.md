@@ -188,4 +188,6 @@ go run  bidder_generator.go --output-dir . --input-template templates/cmake.tmpl
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/vanilla-rtb/extensions/issues)
 [![Installing Dependencies](https://img.shields.io/badge/Dependencies-wiki-green.svg)](https://github.com/vanilla-rtb/extensions/wiki/Installing-Dependencies)
 
+**VIDEO:**
+
 [![Alt text for your video](https://img.youtube.com/vi/saJQ-Y_VkCA/0.jpg)](http://www.youtube.com/watch?v=saJQ-Y_VkCA)
