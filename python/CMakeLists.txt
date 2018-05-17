@@ -7,6 +7,8 @@ if ( NOT DEFINED VANILLA_RTB_ROOT )
 message(FATAL_ERROR "Please setup VANILLA_RTB_ROOT a path  to vanilla-rtb sources")
 endif()
 
+
+
 SET(CMAKE_CXX_STANDARD 14)
 SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 SET(CMAKE_CXX_EXTENSIONS OFF)
@@ -20,7 +22,7 @@ find_package(Threads)
 find_package( PythonLibs 2.7 REQUIRED )
 include_directories( ${PYTHON_INCLUDE_DIRS} )
 
-#fixes for boost_python
+#fixes for boost_python with multiple python versions installed 
 if(PYTHONLIBS_FOUND)
    find_package(PythonInterp)
    if(PYTHONINTERP_FOUND)
@@ -61,12 +63,13 @@ list(APPEND SOURCE_FILES "${RTB_ROOT}/core/logger.cpp" "${CRUD_SOURCE_FILES}")
 # named after the project's name
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 
+if (NOT WIN32 AND NOT APPLE)
+set(RT_LIB rt)
+endif()
+
 # This line will give our library file a .so extension without any "lib" prefix to work for python interpretor 
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".so")
 
-# Essential library files to link to a node addon,
-# you should add this line in every CMake.js based project.
-# Define Boost dependencies there.
-target_link_libraries(${PROJECT_NAME} ${CMAKE_JS_LIB} ${Boost_LIBRARIES} ${PYTHON_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(${PROJECT_NAME} ${CMAKE_JS_LIB} ${Boost_LIBRARIES} ${PYTHON_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIB})
 
 message(${Boost_LIBRARIES})

@@ -2,18 +2,18 @@
 
 The bindings based on [Boost.Python](https://www.boost.org/doc/libs/1_66_0/libs/python/doc/html/index.html)
 
-### Build pyBidder module and Run
+#### Build pyBidder module and Run
 
 ```
 npm install
 python bidder.py  --config config.cfg
 ```
 
-#### Warning !!!
+### Warning !!!
 cmake script is automatically placing ${HOME}/user-config.jam for boost python libraries build
 
 ```
-#fixes for boost_python
+#fixes for boost_python with multiple python versions installed
 if(PYTHONLIBS_FOUND)
    find_package(PythonInterp)
    if(PYTHONINTERP_FOUND)
