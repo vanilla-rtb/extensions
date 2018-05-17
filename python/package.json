@@ -1,0 +1,40 @@
+{
+  "name": "extensions",
+  "version": "0.0.1",
+  "description": "A  Node.js wrapper to vanilla-rtb bidder",
+  "main": "bidder.js",
+  "scripts": {
+    "preinstall": "bash preinstall.sh $npm_package_config_vanilla_root",
+    "install": "cmake-js -l verbose --std c++14 compile",
+    "run": "node bidder.js --config config.cfg",
+    "bidder": "node bidder.js"
+  },
+  "config": {
+    "vanilla_root": "fwk"
+  },
+  "dependencies": {
+    "bindings": "^1.3.0",
+    "boost-lib": "^0.11.3",
+    "cmake-js": "^3.7.3",
+    "nan": "^2.9.2"
+  },
+  "engines": {
+    "node": "9.7.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vanilla-rtb/extensions"
+  },
+  "keywords": [
+    "node",
+    "vanilla-rtb",
+    "extensions"
+  ],
+  "author": "Vladimir Venediktov",
+  "contributors": [
+    "Vladimir Venediktov <info@forkbid.com> (http://forkbid.com)",
+    "Arseny Bushev <info@forkbid.com> (http://forkbid.com)",
+    "Vladimir Lysyy <info@forkbid.com> (http://forkbid.com)"
+  ],
+  "license": "AGPL-1.0"
+}
