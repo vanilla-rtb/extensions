@@ -94,7 +94,7 @@ The main reason behind such installation is  ```import "stubs"``` directive in o
 
 ### 2. Download vanilla-rtb extensions to working folder 
 ```
-git clone --recursive clone https://github.com/vanilla-rtb/extensions 
+git clone --recursive  https://github.com/vanilla-rtb/extensions 
 ```
 
 ### 3. To generate targeting code and application utilizing it execute following command
