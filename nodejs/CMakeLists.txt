@@ -14,6 +14,8 @@ SET(CMAKE_CXX_EXTENSIONS OFF)
 # Boost dependency
 set(Boost_USE_STATIC_LIBS   ON)
 set(Boost_USE_MULTITHREADED ON)
+#disable the search for boost-cmake.
+SET(Boost_NO_BOOST_CMAKE ON)
 find_package(Threads)
 
 # Include BoostLib module
