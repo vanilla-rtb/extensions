@@ -3,6 +3,11 @@
   "version": "0.0.1",
   "description": "A  Node.js wrapper to vanilla-rtb bidder",
   "main": "bidder.js",
+  "engines": {
+    "node": ">=9.7.1 <= 11.0.0",
+    "npm": ">=6.0.0 <= 7.0.0"
+  },
+  "engineStrict": true,
   "scripts": {
     "preinstall": "bash preinstall.sh $npm_package_config_vanilla_root",
     "install": "cmake-js -l verbose --std c++14 compile",
@@ -17,9 +22,6 @@
     "boost-lib": "^0.11.3",
     "cmake-js": "^3.6.2",
     "nan": "^2.9.2"
-  },
-  "engines": {
-    "node": "9.7.1"
   },
   "repository": {
     "type": "git",
