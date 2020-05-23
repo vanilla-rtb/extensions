@@ -141,10 +141,11 @@ int main(int argc, char *argv[]) {
     auto retrieve_{{$entity_var}}_f = [&cacheLoader]( auto && key, auto&& ...)  {
         {{$entity | GetReflectionTypeName}}  {{$entity_var}} ;
         auto &value =  {{$entity_var}}.{{$output_field.FieldName}}; //TODO support for mutiple tupple
+        using return_value_type = std::remove_reference<decltype(value)>::type;
         if (!cacheLoader.retrieve( {{$entity_var}},{{if eq $i 0}}key{{else}}*key{{end}})) {
-            return boost::optional<decltype(value)>();
+            return boost::optional<return_value_type>();
         }
-        return boost::optional<decltype(value)>(value);
+        return boost::optional<return_value_type>(value);
     };
     {{ else -}}
     auto retrieve_{{$entity_var}}_f = [&cacheLoader]( auto && key, auto&& ...)  {

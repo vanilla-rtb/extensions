@@ -27,7 +27,7 @@ include(BoostLib)
 
 # Locate/Download Boost (semver)
 list(APPEND REQUIRED_BOOST_LIBRARIES "log" "program_options" "system" "serialization" "date_time" "regex")
-require_boost_libs("1.69.0" "${REQUIRED_BOOST_LIBRARIES}")
+require_boost_libs("= 1.65.0" "${REQUIRED_BOOST_LIBRARIES}")
 
 include_directories(${Boost_INCLUDE_DIRS})
 
@@ -57,3 +57,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".node")
 target_link_libraries(${PROJECT_NAME} ${CMAKE_JS_LIB} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
 message(${Boost_LIBRARIES})
+
