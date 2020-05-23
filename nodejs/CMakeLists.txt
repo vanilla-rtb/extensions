@@ -27,7 +27,7 @@ include(BoostLib)
 
 # Locate/Download Boost (semver)
 list(APPEND REQUIRED_BOOST_LIBRARIES "log" "program_options" "system" "serialization" "date_time" "regex")
-require_boost_libs("1.66.0" "${REQUIRED_BOOST_LIBRARIES}")
+require_boost_libs("1.69.0" "${REQUIRED_BOOST_LIBRARIES}")
 
 include_directories(${Boost_INCLUDE_DIRS})
 
