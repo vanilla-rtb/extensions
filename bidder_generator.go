@@ -7,8 +7,8 @@
 package main
 
 import (
-	"io/ioutil"
 	"log"
+	"os"
 	"text/template"
 
 	"github.com/jessevdk/go-flags"
@@ -70,7 +70,7 @@ func main() {
 	}
 	_, err := parser.Parse()
 	die(err)
-	templateContent, err := ioutil.ReadFile(string(options.InputTemplate))
+	templateContent, err := os.ReadFile(string(options.InputTemplate))
 	die(err)
 
 	var tmpl = template.Must(template.New("").Funcs(codegen.FuncMap).Parse(string(templateContent)))
